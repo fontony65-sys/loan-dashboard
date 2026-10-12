@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1b33"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Loans">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
+<title>Loan Dashboard</title>
+<script src="/vendor/chart.js/chart.umd.js"></script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1d2433;--mut:#6b7385;--pri:#1f6feb;--ok:#1a7f37;--warn:#bf8700;--bad:#cf222e;--line:#e3e7ef}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#0f1b33;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0;flex:1}header .tag{font-size:11px;background:#bf8700;padding:2px 8px;border-radius:10px}
+nav button{background:none;border:0;color:#c9d4ea;padding:6px 10px;cursor:pointer;font-size:14px;border-radius:6px}nav button.on{background:#24395f;color:#fff}
+main{padding:20px;max-width:1300px;margin:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi .l{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em}.kpi .v{font-size:20px;font-weight:700;margin-top:4px}.kpi.bad .v{color:var(--bad)}
+.charts{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}@media(max-width:800px){.charts{grid-template-columns:1fr}}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}.bar h2{margin:0;font-size:16px;flex:1}
+input,select,textarea{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:#fff}
+button.b{font:inherit;padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer}button.p{background:var(--pri);color:#fff;border-color:var(--pri)}
+button.sm{padding:3px 8px;font-size:12px}button.d{color:var(--bad)}
+.tw{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{background:#f8f9fc;font-size:12px;color:var(--mut);text-transform:uppercase}
+td.n{text-align:right;font-variant-numeric:tabular-nums}tr.overdue td{background:#fff1f0}tr.defaulted td{background:#f6f6f6;color:#777}
+.st{padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}.st.active{background:#ddf4ff;color:#0969da}.st.paid{background:#dafbe1;color:var(--ok)}.st.overdue{background:#ffebe9;color:var(--bad)}.st.defaulted{background:#eee;color:#555}
+.hide{display:none!important}
+dialog{border:0;border-radius:12px;padding:0;max-width:520px;width:95%;box-shadow:0 10px 40px rgba(0,0,0,.25)}dialog form{padding:18px}dialog h3{margin:0 0 12px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}.g .f{grid-column:1/-1}
+.acts{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+#login{max-width:340px;margin:12vh auto}#login input{width:100%;margin:6px 0}.err{color:var(--bad);min-height:1.2em}
+#toast{position:fixed;bottom:16px;right:16px;background:#0f1b33;color:#fff;padding:10px 14px;border-radius:8px;opacity:0;transition:.3s}#toast.on{opacity:1}
+.mut{color:var(--mut)}
+/* ---- touch / iPhone ---- */
+html{-webkit-text-size-adjust:100%}
+header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.tw{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+@media (pointer:coarse),(max-width:700px){
+ input,select,textarea{font-size:16px;min-height:44px} /* 16px stops iOS zoom-on-focus */
+ button.b,nav button{min-height:44px;padding:10px 14px;font-size:16px}
+ button.sm{min-height:36px;padding:6px 12px;font-size:14px}
+ td button.sm{margin:2px 0}
+}
+@media (max-width:700px){
+ header{gap:8px;padding:10px 12px}header h1{font-size:17px;flex:1 1 100%}
+ nav{display:flex;overflow-x:auto;gap:4px;flex:1 1 100%;-webkit-overflow-scrolling:touch}nav button{white-space:nowrap}
+ main{padding:12px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+ .kpis{grid-template-columns:1fr 1fr;gap:8px}.kpi .v{font-size:17px}.card{padding:12px}
+ .bar input,.bar select{flex:1 1 140px}.bar button{flex:1 1 100%}
+ .g{grid-template-columns:1fr}dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:14px 14px 0 0}dialog form{padding-bottom:max(18px,env(safe-area-inset-bottom))}
+ #login{margin:8vh 12px}#toast{left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom))}
+}
+</style></head><body>
+<div id="login" class="card hide"><h2>Loan Dashboard</h2><p class="mut">Admin sign in</p>
+<form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
+<div class="err" id="lerr"></div><button class="b p" style="width:100%">Sign in</button></form></div>
+<div id="app" class="hide">
+<header><h1>💼 Loan Dashboard <span class="tag">EXAMPLE DATA</span></h1>
+<nav><button data-v="dash" class="on">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button></nav>
+<select id="cur" title="Currency"></select><button class="b sm" id="logout">Log out</button></header>
+<main>
+<section id="v-dash">
+ <div class="kpis" id="kpis"></div>
+ <div class="charts"><div class="card"><b>Monthly disbursements vs collections</b><canvas id="c1" height="120"></canvas></div>
+ <div class="card"><b>Loans by status</b><canvas id="c2" height="180"></canvas></div></div>
+ <div class="bar"><h2>Overdue loans</h2></div><div class="tw"><table id="t-od"></table></div>
+</section>
+<section id="v-loans" class="hide"><div class="bar"><h2>Loans</h2><input id="lq" placeholder="Search borrower / #id"><select id="ls"><option value="">All statuses</option><option>active</option><option>overdue</option><option>paid</option><option>defaulted</option></select><button class="b p" onclick="loanForm()">+ New loan</button></div><div class="tw"><table id="t-loans"></table></div></section>
+<section id="v-borrowers" class="hide"><div class="bar"><h2>Borrowers</h2><input id="bq" placeholder="Search name, phone, email, ID"><button class="b p" onclick="borrowerForm()">+ New borrower</button></div><div class="tw"><table id="t-borrowers"></table></div></section>
+<section id="v-repayments" class="hide"><div class="bar"><h2>Repayments</h2><input id="rq" placeholder="Search borrower / reference"><select id="rm"><option value="">All methods</option><option>cash</option><option>mobile_money</option><option>bank_transfer</option><option>cheque</option><option>other</option></select><input type="date" id="rf" title="From"><input type="date" id="rt" title="To"><button class="b p" onclick="payForm()">+ Record payment</button></div><div class="tw"><table id="t-repayments"></table></div></section>
+</main></div>
+<dialog id="dlg"><form id="df" method="dialog"></form></dialog><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);let CUR='XAF',charts={},cache={};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=v=>{try{return new Intl.NumberFormat('fr-CM',{style:'currency',currency:CUR,maximumFractionDigits:CUR==='XAF'||CUR==='XOF'?0:2}).format(v||0)}catch{return (v||0).toLocaleString()+' '+CUR}};
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)};
+async function api(path,opt={}){const r=await fetch('/api'+path,{...opt,headers:{'Content-Type':'application/json'},body:opt.body?JSON.stringify(opt.body):undefined});
+ if(r.status===401&&path!=='/login'){show(false);throw new Error('Unauthorized')}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.statusText);return j}
+function show(on){$('#app').classList.toggle('hide',!on);$('#login').classList.toggle('hide',on)}
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await api('/login',{method:'POST',body:Object.fromEntries(f)});show(true);boot()}catch(x){$('#lerr').textContent=x.message}};
+$('#logout').onclick=async()=>{await api('/logout',{method:'POST'});show(false)};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>view(b.dataset.v));
+function view(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['dash','loans','borrowers','repayments'].forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));refresh(v)}
+const cur=()=>document.querySelector('nav button.on').dataset.v;
+const deb=(f,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
+['#lq','#ls'].forEach(s=>$(s).oninput=deb(loadLoans));['#bq'].forEach(s=>$(s).oninput=deb(loadBorrowers));['#rq','#rm','#rf','#rt'].forEach(s=>$(s).oninput=deb(loadRepayments));
+$('#cur').onchange=async e=>{await api('/settings',{method:'PUT',body:{currency:e.target.value}});CUR=e.target.value;refresh(cur());toast('Currency set to '+CUR)};
+async function boot(){const s=await api('/settings');CUR=s.currency;const opts=['XAF','XOF','NGN','EUR','USD','GBP'];if(!opts.includes(CUR))opts.unshift(CUR);$('#cur').innerHTML=opts.map(c=>`<option ${c===CUR?'selected':''}>${c}</option>`).join('');view('dash')}
+function refresh(v){({dash:loadDash,loans:loadLoans,borrowers:loadBorrowers,repayments:loadRepayments})[v]()}
+const st=s=>`<span class="st ${s}">${s}</span>`;
+function loanRows(rows){return `<tr><th>#</th><th>Borrower</th><th>Principal</th><th>Rate</th><th>Term</th><th>Start</th><th>Total due</th><th>Paid</th><th>Outstanding</th><th>Arrears</th><th>Next due</th><th>Status</th><th></th></tr>`+
+ rows.map(l=>`<tr class="${l.effective_status}"><td>${l.id}</td><td>${esc(l.borrower_name)}</td><td class="n">${money(l.principal)}</td><td>${l.interest_rate}%</td><td>${l.term_months}m ${l.repayment_frequency}</td><td>${l.start_date}</td><td class="n">${money(l.total_due)}</td><td class="n">${money(l.total_paid)}</td><td class="n">${money(l.outstanding)}</td><td class="n">${l.arrears?money(l.arrears):'—'}</td><td>${l.next_due_date||'—'}</td><td>${st(l.effective_status)}</td>
+ <td>${l.outstanding>0?`<button class="b sm p" onclick="payForm(${l.id})">Record payment</button> `:''}<button class="b sm" onclick="sched(${l.id})">Schedule</button> <button class="b sm" onclick="loanForm(${l.id})">Edit</button> <button class="b sm d" onclick="del('loans',${l.id})">Delete</button></td></tr>`).join('')||'<tr><td class="mut">No loans</td></tr>'}
+async function loadDash(){const s=await api('/summary');
+ const k=[['Total lent',s.total_lent],['Total collected',s.total_collected],['Outstanding',s.total_outstanding],['Expected interest',s.expected_interest],['Overdue loans',s.overdue_count,1,1],['Overdue amount',s.overdue_amount,1],['Borrowers',s.borrower_count,0,1],['Loans',s.loan_count,0,1]];
+ $('#kpis').innerHTML=k.map(([l,v,bad,cnt])=>`<div class="card kpi ${bad&&v?'bad':''}"><div class="l">${l}</div><div class="v">${cnt?v:money(v)}</div></div>`).join('');
+ const t=s.monthly_trends;charts.c1?.destroy();charts.c1=new Chart($('#c1'),{type:'bar',data:{labels:t.map(x=>x.month),datasets:[{label:'Disbursed',data:t.map(x=>x.disbursed),backgroundColor:'#1f6feb'},{label:'Collected',data:t.map(x=>x.collected),backgroundColor:'#2da44e'}]},options:{responsive:true,animation:false,scales:{y:{ticks:{callback:v=>money(v)}}}}});
+ const b=s.loans_by_status;charts.c2?.destroy();charts.c2=new Chart($('#c2'),{type:'doughnut',data:{labels:Object.keys(b),datasets:[{data:Object.values(b),backgroundColor:['#0969da','#2da44e','#cf222e','#8c959f']}]},options:{animation:false}});
+ $('#t-od').innerHTML=loanRows(await api('/loans?status=overdue'))}
+async function loadLoans(){const p=new URLSearchParams({q:$('#lq').value,status:$('#ls').value});cache.loans=await api('/loans?'+p);$('#t-loans').innerHTML=loanRows(cache.loans)}
+async function loadBorrowers(){const r=await api('/borrowers?q='+encodeURIComponent($('#bq').value));
+ $('#t-borrowers').innerHTML=`<tr><th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>ID number</th><th>Loans</th><th>Total borrowed</th><th></th></tr>`+r.map(b=>`<tr><td>${b.id}</td><td>${esc(b.name)}</td><td>${esc(b.phone)}</td><td>${esc(b.email)}</td><td>${esc(b.address)}</td><td>${esc(b.id_number)}</td><td>${b.loan_count}</td><td class="n">${money(b.total_borrowed)}</td>
+ <td><button class="b sm" onclick="loanForm(null,${b.id})">+ Loan</button> <button class="b sm" onclick="borrowerForm(${b.id})">Edit</button> <button class="b sm d" onclick="del('borrowers',${b.id})">Delete</button></td></tr>`).join('')}
+async function loadRepayments(){const p=new URLSearchParams({q:$('#rq').value,method:$('#rm').value,from:$('#rf').value,to:$('#rt').value});const r=await api('/repayments?'+p);
+ $('#t-repayments').innerHTML=`<tr><th>#</th><th>Date</th><th>Loan</th><th>Borrower</th><th>Amount</th><th>Method</th><th>Reference</th><th></th></tr>`+r.map(x=>`<tr><td>${x.id}</td><td>${x.date}</td><td>#${x.loan_id}</td><td>${esc(x.borrower_name)}</td><td class="n">${money(x.amount)}</td><td>${x.method}</td><td>${esc(x.reference)}</td>
+ <td><button class="b sm" onclick="payForm(null,${x.id})">Edit</button> <button class="b sm d" onclick="del('repayments',${x.id})">Delete</button></td></tr>`).join('')||'<tr><td class="mut">No repayments</td></tr>'}
+async function del(t,id){if(!confirm(`Delete ${t.slice(0,-1)} #${id}?`))return;try{await api(`/${t}/${id}`,{method:'DELETE'});toast('Deleted');refresh(cur())}catch(e){alert(e.message.includes('FOREIGN')?'Cannot delete: borrower still has loans.':e.message)}}
+function dialog(title,fields,data,onSave){const f=$('#df');f.innerHTML=`<h3>${title}</h3><div class="g">${fields.map(([n,l,type='text',o])=>`<label class="${type==='textarea'||o?.full?'f':''}">${l}${
+ type==='select'?`<select name="${n}">${o.opts.map(([v,t])=>`<option value="${esc(v)}" ${String(data[n]??o.def??'')===String(v)?'selected':''}>${esc(t)}</option>`).join('')}</select>`:type==='textarea'?`<textarea name="${n}">${esc(data[n])}</textarea>`:`<input name="${n}" type="${type}" ${type==='number'?'step="any"':''} value="${esc(data[n]??o?.def??'')}" ${o?.req?'required':''}>`}</label>`).join('')}</div><div class="err" id="derr"></div>
+ <div class="acts"><button class="b" value="cancel" formnovalidate>Cancel</button><button class="b p" id="save">Save</button></div>`;
+ $('#save').onclick=async e=>{e.preventDefault();if(!f.reportValidity())return;const o=Object.fromEntries(new FormData(f));try{await onSave(o);$('#dlg').close();toast('Saved');refresh(cur())}catch(x){$('#derr').textContent=x.message}};$('#dlg').showModal()}
+async function borrowerForm(id){const d=id?await api('/borrowers/'+id):{};dialog(id?'Edit borrower':'New borrower',[['name','Full name','text',{req:1,full:1}],['phone','Phone'],['email','Email','email'],['id_number','ID number (CNI)'],['address','Address','textarea']],d,
+ o=>api('/borrowers'+(id?'/'+id:''),{method:id?'PUT':'POST',body:o}))}
+async function loanForm(id,bid){const bs=await api('/borrowers');const d=id?await api('/loans/'+id):{borrower_id:bid,start_date:new Date().toISOString().slice(0,10),repayment_frequency:'monthly',status:'active',interest_rate:24,term_months:6};
+ dialog(id?'Edit loan #'+id:'New loan',[['borrower_id','Borrower','select',{opts:bs.map(b=>[b.id,b.name]),full:1}],['principal',`Principal (${CUR})`,'number',{req:1}],['interest_rate','Annual interest % (flat)','number',{req:1}],['term_months','Term (months)','number',{req:1}],['start_date','Start date','date',{req:1}],
+ ['repayment_frequency','Repayment frequency','select',{opts:[['monthly','Monthly'],['biweekly','Every 2 weeks'],['weekly','Weekly']]}],['status','Status','select',{opts:['active','paid','overdue','defaulted'].map(s=>[s,s])}],['notes','Notes','textarea']],d,
+ o=>api('/loans'+(id?'/'+id:''),{method:id?'PUT':'POST',body:o}))}
+async function payForm(loanId,rid){const loans=(await api('/loans')).filter(l=>l.outstanding>0||l.id==loanId);const d=rid?await api('/repayments/'+rid):{loan_id:loanId,date:new Date().toISOString().slice(0,10),method:'mobile_money'};
+ if(!rid&&loanId){const l=loans.find(x=>x.id==loanId);d.amount=l?Math.min(l.installment,l.outstanding):''}
+ if(rid){const all=await api('/loans');if(!loans.find(l=>l.id==d.loan_id))loans.push(all.find(l=>l.id==d.loan_id))}
+ dialog(rid?'Edit repayment #'+rid:'Record payment',[['loan_id','Loan','select',{opts:loans.map(l=>[l.id,`#${l.id} ${l.borrower_name} — outstanding ${money(l.outstanding)}`]),full:1}],['amount',`Amount (${CUR})`,'number',{req:1}],['date','Date','date',{req:1}],
+ ['method','Method','select',{opts:[['mobile_money','Mobile money (MTN/Orange)'],['cash','Cash'],['bank_transfer','Bank transfer'],['cheque','Cheque'],['other','Other']]}],['reference','Reference','text',{full:1}]],d,
+ o=>api('/repayments'+(rid?'/'+rid:''),{method:rid?'PUT':'POST',body:o}))}
+async function sched(id){const s=await api(`/loans/${id}/schedule`);const f=$('#df');f.innerHTML=`<h3>Repayment schedule — loan #${id}</h3><p class="mut">Total due ${money(s.total_due)} · paid ${money(s.total_paid)}</p><div class="tw" style="max-height:50vh"><table><tr><th>#</th><th>Due</th><th>Amount</th><th>Paid</th><th>Status</th></tr>${s.schedule.map(r=>`<tr class="${r.status!=='paid'&&r.due_date<new Date().toISOString().slice(0,10)?'overdue':''}"><td>${r.number}</td><td>${r.due_date}</td><td class="n">${money(r.amount)}</td><td class="n">${money(r.paid)}</td><td>${r.status}</td></tr>`).join('')}</table></div><div class="acts"><button class="b">Close</button></div>`;$('#dlg').showModal()}
+api('/me').then(()=>{show(true);boot()}).catch(()=>show(false));
+</script></body></html>

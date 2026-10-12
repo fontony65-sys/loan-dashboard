@@ -1,0 +1,24 @@
+{
+  "name": "loan-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "node db/migrate.js",
+    "seed": "node db/seed.js",
+    "screenshot": "node scripts/screenshot.js",
+    "screenshot:mobile": "node scripts/screenshot.js --mobile"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "chart.js": "^4.4.4",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.47.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
