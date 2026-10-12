@@ -361,6 +361,7 @@ app.get('/api/export/:table.csv', wrap(async (req, res) => {
 }));
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
+app.use('/vendor/inter', express.static(path.join(__dirname, 'node_modules/@fontsource-variable/inter/files'), { maxAge: '30d' }));
 app.use('/vendor/chart.js', express.static(path.join(__dirname, 'node_modules/chart.js/dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((err, req, res, next) => { console.error(err); res.status(500).json({ error: 'Server error' }); });
