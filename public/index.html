@@ -54,13 +54,23 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
 .exp summary{list-style:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center}.exp summary::-webkit-details-marker{display:none}
 .exp .menu{position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);z-index:50;min-width:170px;overflow:hidden}
 .exp .menu a{display:block;padding:12px 14px;color:#222;text-decoration:none;border-bottom:1px solid #eee}.exp .menu a:last-child{border:0}
+.calc input,.calc select{font-size:16px;min-height:44px;width:100%;box-sizing:border-box}.calc label{display:flex;flex-direction:column;gap:4px}
+#c2loan{min-height:48px;font-size:16px}
+#export{background:#2da44e!important;color:#fff!important;border:1px solid #2da44e!important;font-weight:600;padding:6px 14px!important}.exp summary.b{background:#fff;color:#222}#t-calc td,#t-calc th{white-space:nowrap}
+.hide.instn{display:none}#gp,#lbs{font-size:16px;min-height:44px}
+.gch{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important}.kpi .gr{font-size:12px;margin-top:2px}.kpi .gr.up{color:#1a7f37}.kpi .gr.dn{color:#cf222e}
+.lbc{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px}.lbc .rk{font-size:22px;font-weight:700;min-width:40px;text-align:center}
+.lbc .nm{font-weight:600}.lbc .st2{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:#57606a;margin-top:2px}.lbc .st2 b{color:#24292f}
+.lbc.gold{border-left:5px solid #d4a72c}.lbc.silver{border-left:5px solid #8c959f}.lbc.bronze{border-left:5px solid #b0723a}
+#df input,#df select{font-size:16px}
+.cap{display:flex;align-items:center;gap:6px;font-size:13px}#capi{font-size:16px;min-height:40px;width:130px}
 </style></head><body>
 <div id="login" class="card hide"><h2>Loan Dashboard</h2><p class="mut">Admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
 <div class="err" id="lerr"></div><button class="b p" style="width:100%">Sign in</button></form></div>
 <div id="app" class="hide">
 <header><h1>💼 Loan Dashboard <span class="tag">EXAMPLE DATA</span></h1>
-<nav><button data-v="dash" class="on">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button></nav>
+<nav><button data-v="dash" class="on">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button><button data-v="calc">🧮 Calculator</button><button data-v="growth">📈 Growth</button><button data-v="leaders">🏆 Leaderboard</button></nav>
 <select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
 <section id="v-dash">
@@ -72,8 +82,34 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
 <section id="v-loans" class="hide"><div class="bar"><h2>Loans</h2><input id="lq" placeholder="Search borrower / #id"><select id="ls"><option value="">All statuses</option><option>active</option><option>overdue</option><option>paid</option><option>defaulted</option></select><button class="b p" onclick="loanForm()">+ New loan</button></div><div class="tw"><table id="t-loans"></table></div></section>
 <section id="v-borrowers" class="hide"><div class="bar"><h2>Borrowers</h2><input id="bq" placeholder="Search name, phone, email, ID"><button class="b p" onclick="borrowerForm()">+ New borrower</button></div><div class="tw"><table id="t-borrowers"></table></div></section>
 <section id="v-repayments" class="hide"><div class="bar"><h2>Repayments</h2><input id="rq" placeholder="Search borrower / reference"><select id="rm"><option value="">All methods</option><option>cash</option><option>mobile_money</option><option>bank_transfer</option><option>cheque</option><option>other</option></select><input type="date" id="rf" title="From"><input type="date" id="rt" title="To"><button class="b p" onclick="payForm()">+ Record payment</button></div><div class="tw"><table id="t-repayments"></table></div></section>
+<section id="v-calc" class="hide"><div class="bar"><h2>Loan calculator</h2></div>
+<div class="card calc"><form id="cf" class="g" onsubmit="return false">
+<label>Principal (XAF)<input name="principal" type="number" inputmode="decimal" min="1" step="any" value="10000"></label>
+<label>Term<select name="term_preset"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option><option value="custom">Custom…</option></select></label>
+<label>Term (days)<input name="term_days" type="number" inputmode="numeric" min="1" step="1" value="14"></label>
+<label>Interest (% of amount lent, whole loan)<input name="interest_rate" type="number" inputmode="decimal" min="0" step="any" value="40"></label>
+<label>Interest (XAF)<input name="interest_amount" type="number" inputmode="decimal" min="0" step="any" value="4000"></label>
+<label>Repayment<select name="repay_mode"><option value="lump">One lump sum at due date</option><option value="inst">Equal installments</option></select></label>
+<label class="instn hide">Number of installments<input name="installments" type="number" inputmode="numeric" min="1" step="1" value="1"></label>
+<label>Start date<input name="start_date" type="date"></label>
+</form><div class="err" id="cerr"></div><div class="kpis" id="cres"></div>
+<button class="b p" id="c2loan" style="width:100%;margin-top:10px">Create loan from this</button></div>
+<div class="tw"><table id="t-calc"></table></div></section>
+<section id="v-growth" class="hide"><div class="bar"><h2>Growth</h2><select id="gp"><option value="week">Weekly</option><option value="month" selected>Monthly</option></select></div>
+<div id="gempty" class="card mut hide">No data yet — growth charts will appear once you record loans and repayments.</div>
+<div class="kpis" id="gk"></div>
+<div class="card"><div class="bar" style="margin:0 0 6px"><b>Revenue &amp; Equity</b><label class="cap">Starting capital (XAF) <input id="capi" type="number" inputmode="decimal" min="0" step="any"></label><button class="b sm p" id="caps">Save</button></div>
+<canvas id="g5" height="220"></canvas><p class="mut" style="font-size:12px;margin:6px 0 0">Bars: interest collected per period. Line: equity = starting capital + cumulative interest collected − write-offs (unpaid principal of defaulted loans). Tap a point for cash on hand vs money out on loan.</p></div>
+<div class="charts gch">
+<div class="card"><b>Lent vs collected</b><canvas id="g1" height="200"></canvas></div>
+<div class="card"><b>Interest earned &amp; cumulative profit</b><canvas id="g2" height="200"></canvas></div>
+<div class="card"><b>Outstanding book</b><canvas id="g3" height="200"></canvas></div>
+<div class="card"><b>New loans, new &amp; active borrowers</b><canvas id="g4" height="200"></canvas></div></div></section>
+<section id="v-leaders" class="hide"><div class="bar"><h2>Leaderboard</h2><select id="lbs"><option value="loans">Most loans</option><option value="borrowed">Total borrowed</option><option value="repaid">Total repaid</option><option value="ontime">On-time rate</option></select></div>
+<div id="lb"></div></section>
 </main></div>
 <dialog id="dlg"><form id="df" method="dialog"></form></dialog><div id="toast"></div>
+<script src="/lib.js"></script>
 <script>
 const $=s=>document.querySelector(s);let CUR='XAF',charts={},cache={};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -82,20 +118,53 @@ const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTim
 async function api(path,opt={}){const r=await fetch('/api'+path,{...opt,headers:{'Content-Type':'application/json'},body:opt.body?JSON.stringify(opt.body):undefined});
  if(r.status===401&&path!=='/login'){show(false);throw new Error('Unauthorized')}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.statusText);return j}
 document.addEventListener('click',e=>{const d=$('#expm');if(d&&d.open&&(!d.contains(e.target)||e.target.closest('.menu a')))d.open=false});
+const fr=v=>Math.round(v).toLocaleString('fr-FR')+' F';
+// Keeps term preset/days, interest %/XAF and repayment mode in sync (calculator + new-loan form).
+function wireLoan(f,onChange=()=>{}){const g=n=>f.querySelector(`[name=${n}]`),P=g('principal'),R=g('interest_rate'),A=g('interest_amount'),T=g('term_days'),TP=g('term_preset'),M=g('repay_mode'),N=g('installments');
+ const amt=()=>{if(R.value!==''&&P.value)A.value=Math.round(+P.value*+R.value)/100};
+ R.oninput=()=>{amt();onChange()};A.oninput=()=>{if(A.value!==''&&+P.value)R.value=Math.round(+A.value/+P.value*10000)/100;onChange()};P.oninput=()=>{amt();onChange()};
+ TP.onchange=()=>{if(TP.value!=='custom')T.value=TP.value;else T.focus();onChange()};T.oninput=()=>{TP.value=['7','14','30'].includes(T.value)?T.value:'custom';onChange()};
+ const mode=()=>{const inst=M.value==='inst';N.closest('label').classList.toggle('hide',!inst);if(!inst)N.value=1;else if(+N.value<2)N.value=2};M.onchange=()=>{mode();onChange()};N.oninput=onChange;
+ TP.value=['7','14','30'].includes(String(T.value))?String(T.value):'custom';M.value=+N.value>1?'inst':'lump';mode()}
+function calcIn(){const o=Object.fromEntries(new FormData($('#cf')));delete o.term_preset;delete o.repay_mode;return o}
+function calc(){const f=$('#cf');if(!f.start_date.value)f.start_date.value=new Date().toISOString().slice(0,10);const o=calcIn();
+ try{const r=LoanLib.calculate(o);$('#cerr').textContent='';
+  $('#cres').innerHTML=[['Total repayable',fr(r.total_repayable)],['Interest',fr(r.total_interest)+' ('+r.interest_pct+'%)'],[r.installments>1?'Installment':'Lump sum',fr(r.installment)],['Installments',r.installments],['Due date',r.due_date]].map(([l,v])=>`<div class="card kpi"><div class="l">${l}</div><div class="v" data-k="${l}">${v}</div></div>`).join('');
+  $('#t-calc').innerHTML='<tr><th>#</th><th>Date</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Remaining</th></tr>'+r.schedule.map(s=>`<tr><td>${s.number}</td><td>${s.due_date}</td><td class="n">${fr(s.amount)}</td><td class="n">${fr(s.principal)}</td><td class="n">${fr(s.interest)}</td><td class="n">${fr(s.balance)}</td></tr>`).join('');
+ }catch(e){$('#cerr').textContent='Enter a positive amount, interest ≥ 0, term ≥ 1 day (installments ≤ days) and a start date.';$('#cres').innerHTML='';$('#t-calc').innerHTML=''}}
+wireLoan($('#cf'),calc);$('#cf').start_date.oninput=calc;
+$('#c2loan').onclick=()=>{const o=calcIn();loanForm(null,null,{principal:o.principal,term_days:o.term_days,interest_rate:o.interest_rate,interest_amount:o.interest_amount,installments:o.installments,start_date:o.start_date})};
+const pct=v=>v==null?'<div class="gr mut">— vs prev.</div>':`<div class="gr ${v>=0?'up':'dn'}">${v>=0?'▲':'▼'} ${Math.abs(v).toLocaleString('fr-FR',{maximumFractionDigits:1})}% vs prev.</div>`;
+async function loadGrowth(){const g=await api('/growth?period='+$('#gp').value);$('#capi').value=g.starting_capital;$('#gempty').classList.toggle('hide',!g.empty);const c=g.current,gp=g.growth_pct,lbl=g.period==='week'?'this week':'this month';
+ $('#gk').innerHTML=[['Lent '+lbl,'lent',1],['Collected '+lbl,'collected',1],['Interest earned '+lbl,'interest_earned',1],['New loans '+lbl,'new_loans'],['Active borrowers','active_borrowers'],['New borrowers','new_borrowers'],['Outstanding book','outstanding_book',1],['Cumulative profit','cumulative_profit',1],['Equity','equity',1],['Cash on hand','cash_on_hand',1],['Out on loan','on_loan',1]]
+  .map(([l,k,m])=>`<div class="card kpi"><div class="l">${l}</div><div class="v">${m?money(c[k]):c[k]}</div>${pct(gp[k])}</div>`).join('');
+ const s=g.series,L=s.map(x=>x.period),opt={responsive:true,animation:false,plugins:{legend:{position:'bottom'}}},mo={...opt,scales:{y:{beginAtZero:true,ticks:{callback:v=>money(v)}}}};
+ const mk=(id,cfg)=>{charts[id]?.destroy();charts[id]=new Chart($('#'+id),cfg)};
+ mk('g5',{type:'bar',data:{labels:L,datasets:[{label:'Revenue (interest collected)',data:s.map(x=>x.interest_earned),backgroundColor:'#bf8700',order:2},{type:'line',label:'Equity',data:s.map(x=>x.equity),borderColor:'#8250df',backgroundColor:'#8250df',pointRadius:4,tension:.2,order:1}]},
+  options:{...mo,interaction:{mode:'index',intersect:false},plugins:{...opt.plugins,tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${money(c.parsed.y)}`,afterBody:it=>{const x=s[it[0].dataIndex];return [`Cash on hand: ${money(x.cash_on_hand)}`,`Out on loan: ${money(x.on_loan)}`,`Write-offs: ${money(x.write_offs)}`]}}}}}});
+ mk('g1',{type:'bar',data:{labels:L,datasets:[{label:'Lent',data:s.map(x=>x.lent),backgroundColor:'#1f6feb'},{label:'Collected',data:s.map(x=>x.collected),backgroundColor:'#2da44e'}]},options:mo});
+ mk('g2',{type:'bar',data:{labels:L,datasets:[{label:'Interest earned',data:s.map(x=>x.interest_earned),backgroundColor:'#bf8700'},{type:'line',label:'Cumulative profit',data:s.map(x=>x.cumulative_profit),borderColor:'#8250df',tension:.2}]},options:mo});
+ mk('g3',{type:'line',data:{labels:L,datasets:[{label:'Outstanding book',data:s.map(x=>x.outstanding_book),borderColor:'#cf222e',backgroundColor:'rgba(207,34,46,.1)',fill:true,tension:.2}]},options:mo});
+ mk('g4',{type:'bar',data:{labels:L,datasets:[{label:'New loans',data:s.map(x=>x.new_loans),backgroundColor:'#0969da'},{label:'New borrowers',data:s.map(x=>x.new_borrowers),backgroundColor:'#2da44e'},{type:'line',label:'Active borrowers',data:s.map(x=>x.active_borrowers),borderColor:'#8250df'}]},options:{...opt,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}})}
+$('#gp').onchange=loadGrowth;
+$('#caps').onclick=async()=>{try{await api('/settings',{method:'PUT',body:{starting_capital:$('#capi').value}});toast('Starting capital saved');loadGrowth()}catch(e){alert(e.message)}};
+async function loadLeaders(){const r=await api('/leaderboard?sort='+$('#lbs').value);const md={gold:'🥇',silver:'🥈',bronze:'🥉'};
+ $('#lb').innerHTML=r.rows.map(x=>`<div class="card lbc ${x.badge||''}"><div class="rk">${md[x.badge]||'#'+x.rank}</div><div><div class="nm">${esc(x.name)}</div><div class="st2"><span>Loans <b>${x.loan_count}</b></span><span>Borrowed <b>${money(x.total_borrowed)}</b></span><span>Repaid <b>${money(x.total_repaid)}</b></span><span>On time <b>${x.on_time_rate==null?'—':x.on_time_rate+'%'}</b> (${x.on_time_loans}/${x.completed_loans})</span></div></div></div>`).join('')||'<div class="card mut">No clients with loans yet.</div>'}
+$('#lbs').onchange=loadLeaders;
 function show(on){$('#app').classList.toggle('hide',!on);$('#login').classList.toggle('hide',on)}
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await api('/login',{method:'POST',body:Object.fromEntries(f)});show(true);boot()}catch(x){$('#lerr').textContent=x.message}};
 $('#logout').onclick=async()=>{await api('/logout',{method:'POST'});show(false)};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>view(b.dataset.v));
-function view(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['dash','loans','borrowers','repayments'].forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));refresh(v)}
+function view(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['dash','loans','borrowers','repayments','calc','growth','leaders'].forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));refresh(v)}
 const cur=()=>document.querySelector('nav button.on').dataset.v;
 const deb=(f,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
 ['#lq','#ls'].forEach(s=>$(s).oninput=deb(loadLoans));['#bq'].forEach(s=>$(s).oninput=deb(loadBorrowers));['#rq','#rm','#rf','#rt'].forEach(s=>$(s).oninput=deb(loadRepayments));
 $('#cur').onchange=async e=>{await api('/settings',{method:'PUT',body:{currency:e.target.value}});CUR=e.target.value;refresh(cur());toast('Currency set to '+CUR)};
 async function boot(){const s=await api('/settings');CUR=s.currency;const opts=['XAF','XOF','NGN','EUR','USD','GBP'];if(!opts.includes(CUR))opts.unshift(CUR);$('#cur').innerHTML=opts.map(c=>`<option ${c===CUR?'selected':''}>${c}</option>`).join('');view('dash')}
-function refresh(v){({dash:loadDash,loans:loadLoans,borrowers:loadBorrowers,repayments:loadRepayments})[v]()}
+function refresh(v){({calc:calc,growth:loadGrowth,leaders:loadLeaders,dash:loadDash,loans:loadLoans,borrowers:loadBorrowers,repayments:loadRepayments})[v]()}
 const st=s=>`<span class="st ${s}">${s}</span>`;
-function loanRows(rows){return `<tr><th>#</th><th>Borrower</th><th>Principal</th><th>Rate</th><th>Term</th><th>Start</th><th>Total due</th><th>Paid</th><th>Outstanding</th><th>Arrears</th><th>Next due</th><th>Status</th><th></th></tr>`+
- rows.map(l=>`<tr class="${l.effective_status}"><td>${l.id}</td><td>${esc(l.borrower_name)}</td><td class="n">${money(l.principal)}</td><td>${l.interest_rate}%</td><td>${l.term_months}m ${l.repayment_frequency}</td><td>${l.start_date}</td><td class="n">${money(l.total_due)}</td><td class="n">${money(l.total_paid)}</td><td class="n">${money(l.outstanding)}</td><td class="n">${l.arrears?money(l.arrears):'—'}</td><td>${l.next_due_date||'—'}</td><td>${st(l.effective_status)}</td>
+function loanRows(rows){return `<tr><th>#</th><th>Borrower</th><th>Principal</th><th>Interest</th><th>Term</th><th>Start</th><th>Total due</th><th>Paid</th><th>Outstanding</th><th>Arrears</th><th>Next due / due</th><th>Status</th><th></th></tr>`+
+ rows.map(l=>`<tr class="${l.effective_status}"><td>${l.id}</td><td>${esc(l.borrower_name)}</td><td class="n">${money(l.principal)}</td><td>${l.model==='short'?l.interest_pct+'% · '+money(l.expected_interest):l.interest_rate+'%/yr'}</td><td>${l.model==='short'?l.term_days+'d'+(l.installments>1?' · '+l.installments+' inst.':' · lump'):l.term_months+'m '+l.repayment_frequency}</td><td>${l.start_date}</td><td class="n">${money(l.total_due)}</td><td class="n">${money(l.total_paid)}</td><td class="n">${money(l.outstanding)}</td><td class="n">${l.arrears?money(l.arrears):'—'}</td><td>${l.next_due_date||'—'}</td><td>${st(l.effective_status)}</td>
  <td>${l.outstanding>0?`<button class="b sm p" onclick="payForm(${l.id})">Record payment</button> `:''}<button class="b sm" onclick="sched(${l.id})">Schedule</button> <button class="b sm" onclick="loanForm(${l.id})">Edit</button> <button class="b sm d" onclick="del('loans',${l.id})">Delete</button></td></tr>`).join('')||'<tr><td class="mut">No loans</td></tr>'}
 async function loadDash(){const s=await api('/summary');
  const k=[['Total lent',s.total_lent],['Total collected',s.total_collected],['Outstanding',s.total_outstanding],['Expected interest',s.expected_interest],['Overdue loans',s.overdue_count,1,1],['Overdue amount',s.overdue_amount,1],['Borrowers',s.borrower_count,0,1],['Loans',s.loan_count,0,1]];
@@ -117,10 +186,16 @@ function dialog(title,fields,data,onSave){const f=$('#df');f.innerHTML=`<h3>${ti
  $('#save').onclick=async e=>{e.preventDefault();if(!f.reportValidity())return;const o=Object.fromEntries(new FormData(f));try{await onSave(o);$('#dlg').close();toast('Saved');refresh(cur())}catch(x){$('#derr').textContent=x.message}};$('#dlg').showModal()}
 async function borrowerForm(id){const d=id?await api('/borrowers/'+id):{};dialog(id?'Edit borrower':'New borrower',[['name','Full name','text',{req:1,full:1}],['phone','Phone'],['email','Email','email'],['id_number','ID number (CNI)'],['address','Address','textarea']],d,
  o=>api('/borrowers'+(id?'/'+id:''),{method:id?'PUT':'POST',body:o}))}
-async function loanForm(id,bid){const bs=await api('/borrowers');const d=id?await api('/loans/'+id):{borrower_id:bid,start_date:new Date().toISOString().slice(0,10),repayment_frequency:'monthly',status:'active',interest_rate:24,term_months:6};
- dialog(id?'Edit loan #'+id:'New loan',[['borrower_id','Borrower','select',{opts:bs.map(b=>[b.id,b.name]),full:1}],['principal',`Principal (${CUR})`,'number',{req:1}],['interest_rate','Annual interest % (flat)','number',{req:1}],['term_months','Term (months)','number',{req:1}],['start_date','Start date','date',{req:1}],
- ['repayment_frequency','Repayment frequency','select',{opts:[['monthly','Monthly'],['biweekly','Every 2 weeks'],['weekly','Weekly']]}],['status','Status','select',{opts:['active','paid','overdue','defaulted'].map(s=>[s,s])}],['notes','Notes','textarea']],d,
- o=>api('/loans'+(id?'/'+id:''),{method:id?'PUT':'POST',body:o}))}
+async function loanForm(id,bid,pre){const bs=await api('/borrowers');const today=new Date().toISOString().slice(0,10);
+ const d=id?await api('/loans/'+id):{borrower_id:bid,start_date:today,status:'active',term_days:14,interest_rate:40,installments:1,...(pre||{})};
+ if(!id&&d.principal&&d.interest_amount==null&&d.interest_rate!=null)d.interest_amount=Math.round(d.principal*d.interest_rate)/100;
+ const save=o=>{delete o.term_preset;delete o.repay_mode;return api('/loans'+(id?'/'+id:''),{method:id?'PUT':'POST',body:o})};
+ const B=['borrower_id','Borrower','select',{opts:bs.map(b=>[b.id,b.name]),full:1}],S=['status','Status','select',{opts:['active','paid','overdue','defaulted'].map(s=>[s,s])}],NT=['notes','Notes','textarea'];
+ if(id&&d.term_days==null)return dialog('Edit loan #'+id+' (legacy annual-rate loan)',[B,['principal',`Principal (${CUR})`,'number',{req:1}],['interest_rate','Annual interest % (flat)','number',{req:1}],['term_months','Term (months)','number',{req:1}],['start_date','Start date','date',{req:1}],
+  ['repayment_frequency','Repayment frequency','select',{opts:[['monthly','Monthly'],['biweekly','Every 2 weeks'],['weekly','Weekly']]}],S,NT],d,save);
+ dialog(id?'Edit loan #'+id:'New loan',[B,['principal',`Amount lent (${CUR})`,'number',{req:1}],['term_preset','Term','select',{opts:[['7','7 days'],['14','14 days'],['30','30 days'],['custom','Custom…']]}],['term_days','Term (days)','number',{req:1}],
+  ['interest_rate','Interest % (whole loan)','number'],['interest_amount',`Interest (${CUR})`,'number'],['repay_mode','Repayment','select',{opts:[['lump','One lump sum at due date'],['inst','Equal installments']]}],['installments','Number of installments','number'],
+  ['start_date','Start date','date',{req:1}],S,NT],d,save);wireLoan($('#df'))}
 async function payForm(loanId,rid){const loans=(await api('/loans')).filter(l=>l.outstanding>0||l.id==loanId);const d=rid?await api('/repayments/'+rid):{loan_id:loanId,date:new Date().toISOString().slice(0,10),method:'mobile_money'};
  if(!rid&&loanId){const l=loans.find(x=>x.id==loanId);d.amount=l?Math.min(l.installment,l.outstanding):''}
  if(rid){const all=await api('/loans');if(!loans.find(l=>l.id==d.loan_id))loans.push(all.find(l=>l.id==d.loan_id))}

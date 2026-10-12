@@ -29,6 +29,41 @@ LID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
 chk "GET /api/loans/:id" 200 "${A[@]}" $B/api/loans/$LID
 chk "PUT /api/loans/:id" 200 "${A[@]}" -X PUT -d '{"notes":"verified"}' $B/api/loans/$LID
 chk "GET /api/loans/:id/schedule" 200 "${A[@]}" $B/api/loans/$LID/schedule
+ok_(){ pass=$((pass+1)); echo "PASS $1"; }; ko_(){ fail=$((fail+1)); echo "FAIL $1"; }
+jsn(){ node -e "const d=JSON.parse(process.argv[1]);process.exit(($1)?0:1)" "$BODY"; }
+chk "legacy loan" 200 "${A[@]}" $B/api/loans/$LID; jsn "d.model==='legacy'&&d.total_due===134400" && ok_ "legacy loan keeps annual-rate total 134400" || ko_ "legacy loan: $BODY"
+chk "GET /api/calculate 10000/40%/14d" 200 "${A[@]}" "$B/api/calculate?principal=10000&interest_rate=40&term_days=14&start_date=2026-10-12"
+jsn "d.total_interest===4000&&d.total_repayable===14000&&d.installments===1&&d.due_date==='2026-10-26'&&d.schedule[0].amount===14000" && ok_ "calculator: 10000 @40%/14d = 4000 interest, 14000 lump sum on 2026-10-26" || ko_ "calc short: $BODY"
+chk "GET /api/calculate fixed XAF interest" 200 "${A[@]}" "$B/api/calculate?principal=10000&interest_amount=4000&term_days=14&start_date=2026-10-12"; jsn "d.interest_pct===40&&d.total_repayable===14000" && ok_ "fixed 4000 XAF interest = 40%" || ko_ "calc amount: $BODY"
+chk "POST short-term loan (40%, 14d, 2 installments)" 201 "${A[@]}" -d "{\"borrower_id\":$BID,\"principal\":10000,\"interest_rate\":40,\"term_days\":14,\"installments\":2,\"start_date\":\"$(date +%F)\"}" $B/api/loans
+SLID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2); jsn "d.model==='short'&&d.interest_amount===4000&&d.total_due===14000&&d.installment===7000&&d.term_days===14" && ok_ "short loan: interest_amount 4000 synced, total 14000, 2x7000" || ko_ "short loan: $BODY"
+chk "GET /api/calculate same as short loan" 200 "${A[@]}" "$B/api/calculate?principal=10000&interest_rate=40&term_days=14&installments=2&start_date=$(date +%F)"; CALC=$BODY
+chk "GET short loan schedule" 200 "${A[@]}" $B/api/loans/$SLID/schedule
+node -e "const c=JSON.parse(process.argv[1]),s=JSON.parse(process.argv[2]);process.exit(c.schedule.length===s.schedule.length&&c.schedule.every((r,i)=>r.due_date===s.schedule[i].due_date&&r.amount===s.schedule[i].amount)&&c.total_repayable===s.total_due?0:1)" "$CALC" "$BODY" && ok_ "calculator matches server schedule for identical loan" || ko_ "calc vs schedule: $CALC / $BODY"
+chk "PUT short loan interest_amount 5000" 200 "${A[@]}" -X PUT -d '{"interest_amount":5000}' $B/api/loans/$SLID; jsn "d.interest_rate===50&&d.total_due===15000" && ok_ "interest XAF -> % in sync (50%)" || ko_ "sync: $BODY"
+chk "POST short loan lump, started 20 days ago" 201 "${A[@]}" -d "{\"borrower_id\":$BID,\"principal\":10000,\"interest_rate\":40,\"term_days\":14,\"start_date\":\"$(date -d '-20 days' +%F)\"}" $B/api/loans
+OLID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2); jsn "d.effective_status==='overdue'&&d.arrears===14000" && ok_ "past due date with balance owed = overdue" || ko_ "overdue: $BODY"
+chk "POST repayment (late) clearing it" 201 "${A[@]}" -d "{\"loan_id\":$OLID,\"amount\":14000,\"date\":\"$(date +%F)\"}" $B/api/repayments; ORID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
+chk "GET cleared loan" 200 "${A[@]}" $B/api/loans/$OLID; jsn "d.effective_status==='paid'" && ok_ "fully repaid short loan is paid" || ko_ "paid: $BODY"
+chk "POST short loan installments > days" 400 "${A[@]}" -d "{\"borrower_id\":$BID,\"principal\":1000,\"interest_rate\":10,\"term_days\":3,\"installments\":5,\"start_date\":\"$(date +%F)\"}" $B/api/loans
+chk "GET /api/settings default capital" 200 "${A[@]}" $B/api/settings; jsn "d.starting_capital===200000" && ok_ "starting_capital defaults to 200000" || ko_ "capital default: $BODY"
+chk "PUT starting_capital invalid" 400 "${A[@]}" -X PUT -d '{"starting_capital":-5}' $B/api/settings
+chk "PUT starting_capital 500000" 200 "${A[@]}" -X PUT -d '{"starting_capital":500000}' $B/api/settings
+chk "GET /api/growth month" 200 "${A[@]}" "$B/api/growth?period=month"
+jsn "d.series.length===12&&d.starting_capital===500000&&d.series.every(x=>Math.abs(x.equity-(500000+x.cumulative_profit-x.write_offs))<0.02)&&'lent' in d.growth_pct&&d.current.new_loans>=2" && ok_ "growth monthly: equity = capital + cumulative interest - write-offs at every point" || ko_ "growth: ${BODY:0:300}"
+jsn "d.series.every(x=>'cash_on_hand' in x&&'on_loan' in x)&&d.current.on_loan>=d.current.outstanding_book-0.01" && ok_ "growth has cash-on-hand / on-loan split" || ko_ "split: ${BODY:0:200}"
+chk "GET /api/growth week" 200 "${A[@]}" "$B/api/growth?period=week"; jsn "d.period==='week'&&d.series.length===12&&d.current.interest_earned>=4000-0.01" && ok_ "growth weekly with interest earned this week" || ko_ "growth week: ${BODY:0:300}"
+chk "PUT starting_capital back to 200000" 200 "${A[@]}" -X PUT -d '{"starting_capital":200000}' $B/api/settings
+chk "GET /api/growth unauth" 401 $B/api/growth
+for s in loans borrowed repaid ontime; do chk "GET /api/leaderboard?sort=$s" 200 "${A[@]}" "$B/api/leaderboard?sort=$s"; done
+jsn "d.rows.length>0&&d.rows[0].badge==='gold'&&d.rows.every(r=>'on_time_rate' in r)" && ok_ "leaderboard ranks with badges + on-time rate" || ko_ "leaderboard: ${BODY:0:300}"
+chk "GET /api/leaderboard?sort=loans" 200 "${A[@]}" "$B/api/leaderboard?sort=loans"; jsn "(()=>{const r=d.rows.find(x=>x.name.includes('Verify'));return r&&r.loan_count===3&&r.completed_loans===1&&r.on_time_rate===0})()" && ok_ "on-time rate: late-cleared loan is not on time (0/1)" || ko_ "on-time: ${BODY:0:400}"
+chk "GET /api/leaderboard unauth" 401 $B/api/leaderboard
+chk "DELETE short loan" 200 "${A[@]}" -X DELETE $B/api/loans/$SLID; chk "DELETE overdue loan" 200 "${A[@]}" -X DELETE $B/api/loans/$OLID
+chk "GET /api/calculate invalid" 400 "${A[@]}" "$B/api/calculate?principal=-5"
+chk "GET /api/calculate unauth" 401 "$B/api/calculate?principal=1"
+chk "GET /lib.js (shared calc code)" 200 -o /dev/null $B/lib.js
+curl -s $B/ | grep -q 'data-v="calc"' && curl -s $B/ | grep -q 'data-v="growth"' && curl -s $B/ | grep -q 'data-v="leaders"' && curl -s $B/ | grep -q 'id="g5"' && { pass=$((pass+1)); echo "PASS UI has Calculator, Growth (+Revenue & Equity), Leaderboard"; } || { fail=$((fail+1)); echo "FAIL UI calculator tab"; }
 chk "DELETE borrower with loan (blocked)" 400 "${A[@]}" -X DELETE $B/api/borrowers/$BID
 chk "GET /api/repayments" 200 "${A[@]}" $B/api/repayments
 chk "GET /api/repayments?method=" 200 "${A[@]}" "$B/api/repayments?method=cash"
@@ -77,6 +112,8 @@ if [ -z "$SKIP_DEPLOY_CHECKS" ]; then
   curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' -d '{"username":"admin","password":"admin123"}' $C/api/login | grep -q 401 && ok "admin123 rejected in production" || ko "admin123 accepted in production"
   PT=$(curl -s -H 'Content-Type: application/json' -d '{"username":"admin","password":"s3cret-test"}' $C/api/login | sed -E 's/.*"token":"([a-f0-9]+)".*/\1/')
   n=$(curl -s -H "Authorization: Bearer $PT" $C/api/borrowers); [ "$n" = "[]" ] && ok "no example data seeded in production" || ko "production seeded data: ${n:0:120}"
+  g=$(curl -s -H "Authorization: Bearer $PT" "$C/api/growth?period=week"); echo "$g" | grep -q '"empty":true' && ok "growth handles empty database" || ko "growth empty: ${g:0:200}"
+  l=$(curl -s -H "Authorization: Bearer $PT" $C/api/leaderboard); [ "$l" = '{"sort":"loans","rows":[]}' ] && ok "leaderboard empty database" || ko "leaderboard empty: $l"
   # 3) session survives restart
   kill ${PIDS[-1]}; wait ${PIDS[-1]} 2>/dev/null
   NODE_ENV=production ADMIN_PASSWORD=s3cret-test PORT=3912 TURSO_DATABASE_URL=file:$TMP/p.db node server.js > $TMP/p2.log 2>&1 & PIDS+=($!); up $C
