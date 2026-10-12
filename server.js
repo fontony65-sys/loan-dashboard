@@ -191,6 +191,47 @@ app.get('/api/summary', wrap(async (req, res) => {
   });
 }));
 
+
+// ---------- export (xlsx + per-table CSV; plain GET so cookie auth works for iOS Safari downloads) ----------
+const ExcelJS = require('exceljs');
+const EXPORT_COLS = {
+  borrowers: ['id', 'name', 'phone', 'email', 'address', 'id_number', 'loan_count', 'total_borrowed', 'created_at'],
+  loans: ['id', 'borrower_id', 'borrower_name', 'borrower_phone', 'principal', 'interest_rate', 'term_months', 'repayment_frequency', 'start_date',
+    'total_due', 'total_paid', 'outstanding', 'arrears', 'effective_status', 'notes'],
+  repayments: ['id', 'loan_id', 'borrower_id', 'borrower_name', 'amount', 'date', 'method', 'reference'],
+};
+const HEAD = { effective_status: 'status', outstanding: 'balance' };
+async function exportData() {
+  await afterWrite();
+  const borrowers = await db.all(`SELECT b.*, COUNT(l.id) AS loan_count, COALESCE(SUM(l.principal),0) AS total_borrowed
+    FROM borrowers b LEFT JOIN loans l ON l.borrower_id=b.id GROUP BY b.id ORDER BY b.id`);
+  const loans = (await allLoans()).sort((a, b) => a.id - b.id);
+  const repayments = await db.all(`SELECT r.*, b.name AS borrower_name, b.id AS borrower_id FROM repayments r JOIN loans l ON l.id=r.loan_id
+    JOIN borrowers b ON b.id=l.borrower_id ORDER BY r.date, r.id`);
+  const shape = (t, rows) => rows.map(r => EXPORT_COLS[t].map(c => r[c] ?? ''));
+  return { borrowers: shape('borrowers', borrowers), loans: shape('loans', loans), repayments: shape('repayments', repayments) };
+}
+const heads = t => EXPORT_COLS[t].map(c => HEAD[c] || c);
+const today = () => new Date().toISOString().slice(0, 10);
+const attach = (res, type, name) => { res.setHeader('Content-Type', type); res.setHeader('Content-Disposition', `attachment; filename="${name}"`); res.setHeader('Cache-Control', 'no-store'); };
+app.get('/api/export.xlsx', wrap(async (req, res) => {
+  const data = await exportData(); const wb = new ExcelJS.Workbook(); wb.created = new Date();
+  for (const t of Object.keys(EXPORT_COLS)) {
+    const ws = wb.addWorksheet(t[0].toUpperCase() + t.slice(1));
+    ws.addRow(heads(t)).font = { bold: true }; data[t].forEach(r => ws.addRow(r));
+    ws.columns.forEach((c, i) => { c.width = Math.min(40, Math.max(10, heads(t)[i].length + 2, ...data[t].map(r => String(r[i]).length + 2))); });
+    ws.views = [{ state: 'frozen', ySplit: 1 }];
+  }
+  const buf = await wb.xlsx.writeBuffer();
+  attach(res, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', `loan-data-${today()}.xlsx`); res.send(Buffer.from(buf));
+}));
+app.get('/api/export/:table.csv', wrap(async (req, res) => {
+  const t = req.params.table; if (!EXPORT_COLS[t]) return res.status(404).json({ error: 'Unknown table' });
+  const q = v => { const s = String(v); return /[",\r\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const rows = [heads(t), ...(await exportData())[t]].map(r => r.map(q).join(','));
+  attach(res, 'text/csv; charset=utf-8', `${t}-${today()}.csv`); res.send('\uFEFF' + rows.join('\r\n') + '\r\n');
+}));
+
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
 app.use('/vendor/chart.js', express.static(path.join(__dirname, 'node_modules/chart.js/dist')));
 app.use(express.static(path.join(__dirname, 'public')));

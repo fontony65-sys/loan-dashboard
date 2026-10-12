@@ -3,7 +3,7 @@
 B=${1:-http://localhost:3000}; P=${ADMIN_PASSWORD:-admin123}; pass=0; fail=0
 chk(){ local name=$1 want=$2; shift 2; local out code; out=$(curl -s -w '\n%{http_code}' "$@"); code=${out##*$'\n'}; BODY=${out%$'\n'*}
   if [ "$code" = "$want" ]; then pass=$((pass+1)); echo "PASS $code $name"; else fail=$((fail+1)); echo "FAIL $code (want $want) $name: $BODY"; fi; }
-J=(-H 'Content-Type: application/json')
+J=(-H 'Content-Type: application/json'); TMPX=$(mktemp)
 chk "GET / (UI)" 200 $B/; echo "$BODY" | grep -q 'Loan Dashboard' || { echo "FAIL UI content"; fail=$((fail+1)); }
 chk "GET chart.js asset" 200 -o /dev/null $B/vendor/chart.js/chart.umd.js
 chk "GET /api/health" 200 $B/api/health
@@ -17,7 +17,7 @@ chk "PUT /api/settings" 200 "${A[@]}" -X PUT -d '{"currency":"XAF"}' $B/api/sett
 chk "GET /api/summary" 200 "${A[@]}" $B/api/summary; echo "     $BODY" | cut -c1-400
 chk "GET /api/borrowers" 200 "${A[@]}" $B/api/borrowers
 chk "GET /api/borrowers?q=" 200 "${A[@]}" "$B/api/borrowers?q=Bello"
-chk "POST /api/borrowers" 201 "${A[@]}" -d '{"name":"[TEST] Verify Borrower","phone":"+237 600000000","id_number":"TEST-123"}' $B/api/borrowers
+chk "POST /api/borrowers" 201 "${A[@]}" -d '{"name":"[TEST] Verify Borrowé","phone":"+237 600000000","id_number":"TEST-123"}' $B/api/borrowers
 BID=$(echo "$BODY" | sed -E 's/.*"id":([0-9]+).*/\1/;' | head -c 10); BID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
 chk "POST /api/borrowers invalid" 400 "${A[@]}" -d '{}' $B/api/borrowers
 chk "GET /api/borrowers/:id" 200 "${A[@]}" $B/api/borrowers/$BID
@@ -34,6 +34,21 @@ chk "GET /api/repayments" 200 "${A[@]}" $B/api/repayments
 chk "GET /api/repayments?method=" 200 "${A[@]}" "$B/api/repayments?method=cash"
 chk "POST /api/repayments" 201 "${A[@]}" -d "{\"loan_id\":$LID,\"amount\":22400,\"date\":\"$(date +%F)\",\"method\":\"mobile_money\"}" $B/api/repayments
 RID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
+chk "GET export.xlsx unauth" 401 -o /dev/null $B/api/export.xlsx
+chk "GET export.xlsx" 200 -D $TMPX.h -o $TMPX.xlsx "${A[@]}" $B/api/export.xlsx
+grep -qi "content-disposition: attachment; filename=\"loan-data-$(date -u +%F).xlsx\"" $TMPX.h && { pass=$((pass+1)); echo "PASS xlsx dated attachment filename"; } || { fail=$((fail+1)); echo "FAIL xlsx disposition: $(cat $TMPX.h)"; }
+node -e "const E=require('exceljs');new E.Workbook().xlsx.readFile('$TMPX.xlsx').then(w=>{const n=w.worksheets.map(s=>s.name).join();if(n!=='Borrowers,Loans,Repayments'||!w.getWorksheet('Loans').getRow(1).values.includes('balance'))process.exit(1)}).catch(()=>process.exit(1))" && { pass=$((pass+1)); echo "PASS xlsx valid with 3 sheets + balance column"; } || { fail=$((fail+1)); echo "FAIL xlsx invalid"; }
+for t in borrowers loans repayments; do chk "GET export/$t.csv" 200 -D $TMPX.h -o $TMPX.csv "${A[@]}" $B/api/export/$t.csv
+  head -c3 $TMPX.csv | od -An -tx1 | grep -q 'ef bb bf' && grep -qi "attachment; filename=\"$t-" $TMPX.h && { pass=$((pass+1)); echo "PASS $t.csv BOM + attachment"; } || { fail=$((fail+1)); echo "FAIL $t.csv BOM/disposition"; }; done
+chk "GET export/borrowers.csv" 200 -o $TMPX.csv "${A[@]}" $B/api/export/borrowers.csv
+grep -q 'Verify Borrowé' $TMPX.csv && { pass=$((pass+1)); echo "PASS borrowers.csv contains UTF-8 accented test row"; } || { fail=$((fail+1)); echo "FAIL borrowers.csv accents"; }
+grep -q '120000' <(curl -s "${A[@]}" $B/api/export/loans.csv) && { pass=$((pass+1)); echo "PASS loans.csv contains test loan"; } || { fail=$((fail+1)); echo "FAIL loans.csv content"; }
+chk "GET export unknown table" 404 "${A[@]}" $B/api/export/sessions.csv
+CK=$(curl -s -D - -o /dev/null "${J[@]}" -d "{\"username\":\"admin\",\"password\":\"$P\"}" $B/api/login | grep -i '^set-cookie' | sed -E 's/.*(session=[a-f0-9]+).*/\1/')
+chk "GET export.xlsx via cookie only" 200 -o /dev/null -H "Cookie: $CK" $B/api/export.xlsx
+curl -s -o /dev/null -X POST -H "Cookie: $CK" $B/api/logout
+curl -s $B/ | grep -q 'href="/api/export.xlsx"' && { pass=$((pass+1)); echo "PASS UI has Export link"; } || { fail=$((fail+1)); echo "FAIL UI export link"; }
+rm -f $TMPX.h $TMPX.xlsx $TMPX.csv
 chk "GET /api/repayments/:id" 200 "${A[@]}" $B/api/repayments/$RID
 chk "PUT /api/repayments/:id" 200 "${A[@]}" -X PUT -d '{"reference":"VERIFY"}' $B/api/repayments/$RID
 chk "GET /api/loans/:id/repayments" 200 "${A[@]}" $B/api/loans/$LID/repayments

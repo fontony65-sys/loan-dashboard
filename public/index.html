@@ -50,6 +50,10 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
  .g{grid-template-columns:1fr}dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:14px 14px 0 0}dialog form{padding-bottom:max(18px,env(safe-area-inset-bottom))}
  #login{margin:8vh 12px}#toast{left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom))}
 }
+.exp{display:inline-flex;gap:6px;align-items:center;position:relative}.exp a.b{text-decoration:none;display:inline-flex;align-items:center;min-height:36px}
+.exp summary{list-style:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center}.exp summary::-webkit-details-marker{display:none}
+.exp .menu{position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #ddd;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.15);z-index:50;min-width:170px;overflow:hidden}
+.exp .menu a{display:block;padding:12px 14px;color:#222;text-decoration:none;border-bottom:1px solid #eee}.exp .menu a:last-child{border:0}
 </style></head><body>
 <div id="login" class="card hide"><h2>Loan Dashboard</h2><p class="mut">Admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
@@ -57,7 +61,7 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
 <div id="app" class="hide">
 <header><h1>💼 Loan Dashboard <span class="tag">EXAMPLE DATA</span></h1>
 <nav><button data-v="dash" class="on">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button></nav>
-<select id="cur" title="Currency"></select><button class="b sm" id="logout">Log out</button></header>
+<select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
 <section id="v-dash">
  <div class="kpis" id="kpis"></div>
@@ -77,6 +81,7 @@ const money=v=>{try{return new Intl.NumberFormat('fr-CM',{style:'currency',curre
 const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)};
 async function api(path,opt={}){const r=await fetch('/api'+path,{...opt,headers:{'Content-Type':'application/json'},body:opt.body?JSON.stringify(opt.body):undefined});
  if(r.status===401&&path!=='/login'){show(false);throw new Error('Unauthorized')}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.statusText);return j}
+document.addEventListener('click',e=>{const d=$('#expm');if(d&&d.open&&(!d.contains(e.target)||e.target.closest('.menu a')))d.open=false});
 function show(on){$('#app').classList.toggle('hide',!on);$('#login').classList.toggle('hide',on)}
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await api('/login',{method:'POST',body:Object.fromEntries(f)});show(true);boot()}catch(x){$('#lerr').textContent=x.message}};
 $('#logout').onclick=async()=>{await api('/logout',{method:'POST'});show(false)};
