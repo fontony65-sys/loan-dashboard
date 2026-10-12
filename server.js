@@ -119,6 +119,10 @@ app.get('/api/borrowers', wrap(async (req, res) => {
     FROM borrowers b LEFT JOIN loans l ON l.borrower_id=b.id
     WHERE b.name LIKE ? OR IFNULL(b.phone,'') LIKE ? OR IFNULL(b.email,'') LIKE ? OR IFNULL(b.id_number,'') LIKE ?
     GROUP BY b.id ORDER BY b.name`, q, q, q, q);
+  const loans = await allLoans();
+  for (const b of rows) { const ls = loans.filter(l => l.borrower_id === b.id);
+    b.last_loan_date = ls.reduce((m, l) => l.start_date > (m || '') ? l.start_date : m, null);
+    b.next_due_date = ls.filter(l => l.next_due_date && l.outstanding > 0.01).reduce((m, l) => !m || l.next_due_date < m ? l.next_due_date : m, null); }
   res.json(rows);
 }));
 crud('borrowers', 'borrowers', ['name', 'phone', 'email', 'address', 'id_number'], ['name'], getBorrower,
@@ -136,7 +140,7 @@ app.get('/api/loans', wrap(async (req, res) => {
 }));
 app.get('/api/loans/:id/schedule', wrap(async (req, res) => {
   const l = await getLoan(req.params.id); if (!l) return res.status(404).json({ error: 'Not found' });
-  res.json({ loan_id: l.id, total_due: l.total_due, total_paid: l.total_paid, schedule: schedule(l, l.total_paid) });
+  res.json({ loan_id: l.id, start_date: l.start_date, end_date: l.end_date, next_due_date: l.next_due_date, total_due: l.total_due, total_paid: l.total_paid, schedule: schedule(l, l.total_paid) });
 }));
 app.get('/api/loans/:id/repayments', wrap(async (req, res) => res.json(await db.all('SELECT * FROM repayments WHERE loan_id=? ORDER BY date DESC', req.params.id))));
 // Short-term loans (term_days set): keep interest_amount (XAF) and interest_rate (% of principal, whole loan) in sync;
@@ -281,21 +285,55 @@ app.get('/api/leaderboard', wrap(async (req, res) => {
   res.json({ sort, rows });
 }));
 
+
+// ---------- cash flow calendar ----------
+app.get('/api/cashflow', wrap(async (req, res) => {
+  const t = iso(new Date()), add = (d, n) => { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return iso(x); };
+  const range = ['today', 'week', 'next7', 'next14', 'next30', 'past'].includes(req.query.range) ? req.query.range : 'next7';
+  let from, to;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(req.query.from || '') && /^\d{4}-\d{2}-\d{2}$/.test(req.query.to || '')) { from = req.query.from; to = req.query.to; }
+  else if (range === 'today') from = to = t;
+  else if (range === 'week') { from = bucketStart(t, 'week'); to = add(from, 6); }
+  else if (range === 'past') { from = add(t, -30); to = add(t, -1); }
+  else { from = t; to = add(t, +range.slice(4)); }
+  const { loans, reps, byId } = await bookData();
+  const ev = [];
+  for (const l of loans) if (l.start_date >= from && l.start_date <= to) ev.push({ date: l.start_date, type: 'disbursed', direction: 'out', amount: l.principal, loan_id: l.id, borrower_id: l.borrower_id, borrower_name: l.borrower_name });
+  for (const r of reps) if (r.date >= from && r.date <= to) { const l = byId.get(r.loan_id); ev.push({ date: r.date, type: 'received', direction: 'in', amount: r.amount, loan_id: r.loan_id, borrower_id: l?.borrower_id, borrower_name: l?.borrower_name }); }
+  const overdue = [];
+  for (const l of loans) { if (l.effective_status === 'defaulted' || l.outstanding <= 0.01) continue;
+    for (const s of schedule(l, l.total_paid)) { if (s.status === 'paid') continue; const due = Math.round((s.amount - s.paid) * 100) / 100;
+      const e = { date: s.due_date, type: 'expected', direction: 'in', amount: due, loan_id: l.id, borrower_id: l.borrower_id, borrower_name: l.borrower_name, installment: s.number,
+        due_today: s.due_date === t, overdue: s.due_date < t };
+      if (e.overdue) overdue.push(e);
+      if (s.due_date >= from && s.due_date <= to && (!e.overdue || range === 'past' || req.query.from)) ev.push(e); } }
+  ev.sort((a, b) => a.date.localeCompare(b.date) || a.type.localeCompare(b.type));
+  const days = []; for (const e of ev) { let d = days[days.length - 1]; if (!d || d.date !== e.date) days.push(d = { date: e.date, out: 0, in_received: 0, in_expected: 0, events: [] });
+    d.events.push(e); d[e.type === 'disbursed' ? 'out' : e.type === 'received' ? 'in_received' : 'in_expected'] += e.amount; }
+  for (const d of days) for (const k of ['out', 'in_received', 'in_expected']) d[k] = r2s(d[k]);
+  const tot = k => r2s(days.reduce((a, d) => a + d[k], 0));
+  res.json({ range, from, to, today: t, totals: { out: tot('out'), in_received: tot('in_received'), in_expected: tot('in_expected') },
+    overdue: overdue.sort((a, b) => a.date.localeCompare(b.date)), overdue_total: r2s(overdue.reduce((a, e) => a + e.amount, 0)),
+    due_today_total: r2s(ev.filter(e => e.due_today).reduce((a, e) => a + e.amount, 0)), days });
+}));
+
 // ---------- export (xlsx + per-table CSV; plain GET so cookie auth works for iOS Safari downloads) ----------
 const ExcelJS = require('exceljs');
 const EXPORT_COLS = {
-  borrowers: ['id', 'name', 'phone', 'email', 'address', 'id_number', 'loan_count', 'total_borrowed', 'created_at'],
-  loans: ['id', 'borrower_id', 'borrower_name', 'borrower_phone', 'model', 'principal', 'expected_interest', 'interest_pct', 'term_days', 'installments', 'start_date', 'end_date',
+  borrowers: ['id', 'name', 'phone', 'email', 'address', 'id_number', 'loan_count', 'total_borrowed', 'last_loan_date', 'next_due_date', 'created_at'],
+  loans: ['id', 'borrower_id', 'borrower_name', 'borrower_phone', 'model', 'principal', 'expected_interest', 'interest_pct', 'term_days', 'installments', 'start_date', 'end_date', 'next_due_date',
     'interest_rate', 'term_months', 'repayment_frequency',
     'total_due', 'total_paid', 'outstanding', 'arrears', 'effective_status', 'notes'],
   repayments: ['id', 'loan_id', 'borrower_id', 'borrower_name', 'amount', 'date', 'method', 'reference'],
 };
-const HEAD = { effective_status: 'status', outstanding: 'balance', expected_interest: 'interest_amount', interest_pct: 'interest_pct_of_principal', end_date: 'due_date', interest_rate: 'legacy_annual_rate', term_months: 'legacy_term_months', repayment_frequency: 'legacy_frequency' };
+const HEAD = { effective_status: 'status', outstanding: 'balance', expected_interest: 'interest_amount', interest_pct: 'interest_pct_of_principal', end_date: 'due_date', start_date: 'disbursed_date', interest_rate: 'legacy_annual_rate', term_months: 'legacy_term_months', repayment_frequency: 'legacy_frequency' };
 async function exportData() {
   await afterWrite();
   const borrowers = await db.all(`SELECT b.*, COUNT(l.id) AS loan_count, COALESCE(SUM(l.principal),0) AS total_borrowed
     FROM borrowers b LEFT JOIN loans l ON l.borrower_id=b.id GROUP BY b.id ORDER BY b.id`);
   const loans = (await allLoans()).sort((a, b) => a.id - b.id);
+  for (const b of borrowers) { const ls = loans.filter(l => l.borrower_id === b.id); b.last_loan_date = ls.map(l => l.start_date).sort().pop() || '';
+    b.next_due_date = ls.filter(l => l.outstanding > 0.01 && l.next_due_date).map(l => l.next_due_date).sort()[0] || ''; }
   const repayments = await db.all(`SELECT r.*, b.name AS borrower_name, b.id AS borrower_id FROM repayments r JOIN loans l ON l.id=r.loan_id
     JOIN borrowers b ON b.id=l.borrower_id ORDER BY r.date, r.id`);
   const shape = (t, rows) => rows.map(r => EXPORT_COLS[t].map(c => r[c] ?? ''));

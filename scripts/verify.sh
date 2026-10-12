@@ -45,6 +45,15 @@ chk "POST short loan lump, started 20 days ago" 201 "${A[@]}" -d "{\"borrower_id
 OLID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2); jsn "d.effective_status==='overdue'&&d.arrears===14000" && ok_ "past due date with balance owed = overdue" || ko_ "overdue: $BODY"
 chk "POST repayment (late) clearing it" 201 "${A[@]}" -d "{\"loan_id\":$OLID,\"amount\":14000,\"date\":\"$(date +%F)\"}" $B/api/repayments; ORID=$(echo "$BODY" | grep -o '"id":[0-9]*' | head -1 | cut -d: -f2)
 chk "GET cleared loan" 200 "${A[@]}" $B/api/loans/$OLID; jsn "d.effective_status==='paid'" && ok_ "fully repaid short loan is paid" || ko_ "paid: $BODY"
+chk "GET /api/cashflow next7" 200 "${A[@]}" "$B/api/cashflow?range=next7"
+jsn "d.from==='$(date -u +%F)'&&d.days.some(x=>x.events.some(e=>e.type==='expected'&&e.loan_id===$SLID&&e.date==='$(date -u -d '+7 days' +%F)'&&e.amount===7500))&&d.days.some(x=>x.events.some(e=>e.type==='disbursed'&&e.loan_id===$SLID&&e.amount===10000))&&d.days.every(x=>x.date>=d.from&&x.date<=d.to)" && ok_ "cash flow next 7 days: disbursement out + expected 7500 on due date" || ko_ "cashflow next7: ${BODY:0:400}"
+jsn "d.days.find(x=>x.date===d.today).out>=10000&&d.days.find(x=>x.date===d.today).in_received>=14000" && ok_ "cash flow daily totals in/out for today" || ko_ "daily totals: ${BODY:0:300}"
+for r in today week next14 next30 past; do chk "GET /api/cashflow?range=$r" 200 "${A[@]}" "$B/api/cashflow?range=$r"; done
+jsn "d.days.every(x=>x.date<d.today)&&d.days.some(x=>x.events.some(e=>e.loan_id===$OLID&&e.type==='disbursed'))" && ok_ "cash flow past: only past dates, includes back-dated disbursement" || ko_ "past: ${BODY:0:300}"
+chk "GET /api/cashflow week" 200 "${A[@]}" "$B/api/cashflow?range=week"; jsn "new Date(d.from+'T00:00:00Z').getUTCDay()===1" && ok_ "this week starts Monday" || ko_ "week: ${BODY:0:200}"
+chk "GET /api/cashflow unauth" 401 "$B/api/cashflow"
+chk "GET /api/borrowers (dates)" 200 "${A[@]}" "$B/api/borrowers?q=Verify"; jsn "d[0].last_loan_date==='$(date -u +%F)'&&d[0].next_due_date==='$(date -u -d '+7 days' +%F)'" && ok_ "borrower last loan date + next due date" || ko_ "borrower dates: $BODY"
+chk "GET schedule has dates" 200 "${A[@]}" $B/api/loans/$SLID/schedule; jsn "d.start_date&&d.end_date==='$(date -u -d '+14 days' +%F)'" && ok_ "loan schedule includes disbursement + due date" || ko_ "sched dates: $BODY"
 chk "POST short loan installments > days" 400 "${A[@]}" -d "{\"borrower_id\":$BID,\"principal\":1000,\"interest_rate\":10,\"term_days\":3,\"installments\":5,\"start_date\":\"$(date +%F)\"}" $B/api/loans
 chk "GET /api/settings default capital" 200 "${A[@]}" $B/api/settings; jsn "d.starting_capital===200000" && ok_ "starting_capital defaults to 200000" || ko_ "capital default: $BODY"
 chk "PUT starting_capital invalid" 400 "${A[@]}" -X PUT -d '{"starting_capital":-5}' $B/api/settings
@@ -63,7 +72,7 @@ chk "DELETE short loan" 200 "${A[@]}" -X DELETE $B/api/loans/$SLID; chk "DELETE 
 chk "GET /api/calculate invalid" 400 "${A[@]}" "$B/api/calculate?principal=-5"
 chk "GET /api/calculate unauth" 401 "$B/api/calculate?principal=1"
 chk "GET /lib.js (shared calc code)" 200 -o /dev/null $B/lib.js
-curl -s $B/ | grep -q 'data-v="calc"' && curl -s $B/ | grep -q 'data-v="growth"' && curl -s $B/ | grep -q 'data-v="leaders"' && curl -s $B/ | grep -q 'id="g5"' && { pass=$((pass+1)); echo "PASS UI has Calculator, Growth (+Revenue & Equity), Leaderboard"; } || { fail=$((fail+1)); echo "FAIL UI calculator tab"; }
+curl -s $B/ | grep -q 'data-v="calc"' && curl -s $B/ | grep -q 'data-v="growth"' && curl -s $B/ | grep -q 'data-v="leaders"' && curl -s $B/ | grep -q 'id="g5"' && curl -s $B/ | grep -q 'data-v="cash"' && { pass=$((pass+1)); echo "PASS UI has Calculator, Growth (+Revenue & Equity), Leaderboard"; } || { fail=$((fail+1)); echo "FAIL UI calculator tab"; }
 chk "DELETE borrower with loan (blocked)" 400 "${A[@]}" -X DELETE $B/api/borrowers/$BID
 chk "GET /api/repayments" 200 "${A[@]}" $B/api/repayments
 chk "GET /api/repayments?method=" 200 "${A[@]}" "$B/api/repayments?method=cash"
