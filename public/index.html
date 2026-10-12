@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#140d24"><meta name="color-scheme" content="dark"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Hood Capital">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
 <title>Hood Capital · Loan Dashboard</title><link rel="preload" href="/vendor/inter/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -102,6 +102,32 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
  .g{grid-template-columns:1fr}dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:18px 18px 0 0}dialog form{padding-bottom:max(18px,env(safe-area-inset-bottom))}
  #login{margin:8vh 12px}#toast{left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom))}
 }
+/* ===== Black theme override: pure black backgrounds, purple headers ===== */
+:root{--bg:#000;--bg2:#000;--card:#0a0a0a;--card2:#111;--line:#262626;--line2:#333;--mut:#a3a3a3;--hd:#c084fc;--hdbar:#3b0764}
+html,body{background:#000!important}
+body{background-image:none!important}
+header{background:linear-gradient(180deg,#4c1d95,#3b0764)!important;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:1px solid #6b21a8;color:#fff}
+.brand{color:#fff;font-weight:800}.brand small{color:#e9d5ff}
+nav button{color:#e9d5ff}nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+nav button.on{background:rgba(0,0,0,.35);color:#fff;border-color:#e9d5ff;box-shadow:inset 0 -2px 0 var(--ac)}
+.card{background:#0a0a0a;border:1px solid var(--line);box-shadow:none}
+.card b,.lbc .nm{color:var(--hd)}.bar h2,section>.bar h2,dialog h3,#login h2{color:var(--hd)!important}
+section>.bar h2::before{box-shadow:none;width:6px;height:6px}
+.kpi::before{box-shadow:none;width:2px;opacity:.85}.kpi.bad::before{box-shadow:none}
+.kpi .l{color:#d8b4fe}
+.tw{background:#0a0a0a;border-color:var(--line)}
+th{background:#140a1f!important;color:var(--hd)!important;border-bottom:1px solid #3b0764}
+td{border-bottom-color:#1a1a1a}tr:nth-child(even) td{background:#0f0f0f}tr:hover td{background:#17111f}
+input,select,textarea{background:#000;border-color:#3a3a3a}select option{background:#111}
+.b{background:#111;border-color:#333}.b:hover{background:#1a1a1a}
+.exp .menu{background:#111;border-color:#333}.exp .menu a{border-color:#262626}.exp .menu a:hover{background:#1a1a1a}
+dialog{background:#0a0a0a;border-color:#333;box-shadow:0 20px 60px rgba(0,0,0,.8)}dialog::backdrop{background:rgba(0,0,0,.75)}
+#toast{background:#111;border-color:#333;box-shadow:none}
+.seg button{background:#0a0a0a;border-color:#333}.seg button.on{background:#3b0764;border-color:#a855f7;box-shadow:none}
+.rev{background:#0a0a0a;border-color:rgba(251,191,36,.35)}.rev>.bar b{color:#fcd34d}
+.lbc.gold{box-shadow:none}.cfday.today{box-shadow:none}
+.logo{box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+#export{box-shadow:none}.b.p,.p{box-shadow:none}
 </style></head><body>
 <div id="login" class="card hide"><h2><span class="logo">H</span>Hood Capital</h2><p class="mut">Loan Dashboard · admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
@@ -153,10 +179,10 @@ header{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(20px,env(
 <script src="/lib.js"></script>
 <script>
 const C={violet:'#a78bfa',indigo:'#818cf8',green:'#4ade80',coral:'#ff7a7a',amber:'#fbbf24',fuchsia:'#e879f9',blue:'#7c8cff',cyan:'#22d3ee',grey:'#a09abc',teal:'#2dd4bf'};
-if(window.Chart){Object.assign(Chart.defaults,{color:'#cbbff0',borderColor:'rgba(167,139,250,.14)'});Chart.defaults.font.family="Inter,system-ui,-apple-system,sans-serif";
- Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'rgba(28,20,48,.96)',borderColor:'#6d4fc2',borderWidth:1,titleColor:'#fff',bodyColor:'#e9e3ff',padding:10,cornerRadius:10,boxPadding:4});
+if(window.Chart){Object.assign(Chart.defaults,{color:'#cbbff0',borderColor:'#262626'});Chart.defaults.font.family="Inter,system-ui,-apple-system,sans-serif";
+ Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'rgba(10,10,10,.96)',borderColor:'#a855f7',borderWidth:1,titleColor:'#fff',bodyColor:'#e9e3ff',padding:10,cornerRadius:10,boxPadding:4});
  Chart.defaults.plugins.legend.labels.color='#cbbff0';Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.elements.bar.borderRadius=5;Chart.defaults.elements.line.borderWidth=2.5;Chart.defaults.elements.point.radius=2.5;
- Chart.defaults.datasets.doughnut={...(Chart.defaults.datasets.doughnut||{}),borderColor:'#1c1430',borderWidth:3};Chart.defaults.scale.grid.color='rgba(167,139,250,.12)';Chart.defaults.scale.ticks.color='#b4a8d4'}
+ Chart.defaults.datasets.doughnut={...(Chart.defaults.datasets.doughnut||{}),borderColor:'#0a0a0a',borderWidth:3};Chart.defaults.scale.grid.color='#262626';Chart.defaults.scale.ticks.color='#b4a8d4'}
 const $=s=>document.querySelector(s);let CUR='XAF',charts={},cache={};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=v=>{try{return new Intl.NumberFormat('fr-CM',{style:'currency',currency:CUR,maximumFractionDigits:CUR==='XAF'||CUR==='XOF'?0:2}).format(v||0)}catch{return (v||0).toLocaleString()+' '+CUR}};
