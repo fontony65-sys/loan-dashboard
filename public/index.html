@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0710"><meta name="color-scheme" content="dark"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#fff8ef"><meta name="color-scheme" content="light"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Hood Capital">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<title>Hood Capital · Loan Dashboard</title><link rel="preload" href="/vendor/inter/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<title>Hood Capital · Loan Dashboard</title><link rel="preload" href="/vendor/nunito/nunito-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/vendor/inter/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <script src="/vendor/chart.js/chart.umd.js"></script>
 <style>
 @font-face{font-family:'Inter';font-style:normal;font-display:swap;font-weight:100 900;src:url(/vendor/inter/inter-latin-wght-normal.woff2) format('woff2-variations'),url(/vendor/inter/inter-latin-wght-normal.woff2) format('woff2')}
@@ -203,20 +203,125 @@ dialog::backdrop{background:rgba(11,7,16,.75)}
 .rev{border-color:rgba(254,215,170,.35)!important}
 a{color:#f9a8d4}
 input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.85) sepia(.4) hue-rotate(260deg)}
+/* ===== Cream light theme + minimal dashboard ===== */
+@font-face{font-family:'Nunito';font-style:normal;font-display:swap;font-weight:200 1000;src:url(/vendor/nunito/nunito-latin-wght-normal.woff2) format('woff2')}
+:root{color-scheme:light;--bg:#fff8ef;--card:#ffffff;--card2:#fffdf8;--line:#efe4d6;--line2:#e4dcf3;--ink:#3b1f47;--mut:#6e5578;
+ --pu:#6d3fb0;--pk:#a8326e;--mint-t:#0f6b4f;--rose-t:#a3324e;--peach-t:#94460f;--blue-t:#1d5a87;--gold-t:#6f5200;
+ --hd:#6d3fb0;--ok:#0f6b4f;--bad:#a3324e;--warn:#94460f;--ac:#a78bfa;--gold:#e8c872;--gold2:#f3d98b;--mintf:#a7f3d0}
+html,body{background:#fff8ef!important;color:#3b1f47!important}
+body{background-image:radial-gradient(600px 380px at 0% 0%,rgba(233,213,255,.55),transparent 70%),radial-gradient(520px 360px at 100% 10%,rgba(251,207,232,.45),transparent 70%),radial-gradient(560px 400px at 50% 100%,rgba(167,243,208,.30),transparent 70%)!important;background-attachment:fixed}
+.num,.kpi .v,.hv,.mv,td.n,.cfe span:last-child{font-family:Nunito,'Quicksand',ui-rounded,'SF Pro Rounded',system-ui,sans-serif!important;font-weight:800;letter-spacing:-.01em}
+header{background:linear-gradient(180deg,rgba(250,243,255,.92),rgba(255,246,236,.92))!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-image:none!important;border-bottom:0!important;box-shadow:0 6px 24px rgba(160,120,180,.10);color:#3b1f47}
+.brand{background:linear-gradient(90deg,#6d3fb0,#a8326e)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.brand small{-webkit-text-fill-color:#6e5578!important;color:#6e5578!important}
+.logo{color:#3b1f47!important;box-shadow:0 4px 14px rgba(196,181,253,.6)!important}
+header .tag{background:#fef3c7!important;color:#6f5200!important;border-color:#e8c872!important}
+nav button{color:#5b3f68!important}nav button:hover{background:rgba(196,181,253,.18)!important}
+nav button.on{background:#ffffff!important;color:#3b1f47!important;border-color:#e4dcf3!important;box-shadow:0 3px 12px rgba(167,139,250,.28)!important}
+.card{background:#ffffff!important;border:1px solid #f1e8dc!important;border-radius:22px!important;box-shadow:0 6px 22px rgba(180,140,120,.10)!important;color:#3b1f47}
+.bar h2,section>.bar h2,dialog h3,#login h2{color:#6d3fb0!important}section>.bar h2::after{color:#a8326e!important}
+.card b{color:#6d3fb0!important}.rev>.bar b{color:#94460f!important}.lbc .nm{color:#3b1f47!important}
+.kpi::before{background:linear-gradient(180deg,#c4b5fd,#f9a8d4)!important;box-shadow:none!important}
+.kpi .l{color:#6e5578!important}.kpi .v{color:#3b1f47!important;font-size:22px!important}.kpi.bad .v{color:#a3324e!important}.kpi.bad::before{background:#fda4af!important}
+.kpi .gr.up{color:#0f6b4f!important}.kpi .gr.dn{color:#a3324e!important}.kx{font-size:11.5px;color:#6e5578;margin-top:2px}
+.mut{color:#6e5578!important}
+th{background:#f7f0fd!important;color:#6d3fb0!important;border-bottom:1px solid #e4dcf3!important}
+td{color:#3b1f47;border-bottom-color:#f4ebe0!important}tr:nth-child(even) td{background:#fffaf3!important}tr:hover td{background:#fbf4ff!important}
+.tw{background:#fff!important;border-color:#f1e8dc!important}
+tr.overdue td{background:#fff1f3!important}tr.overdue td:first-child{box-shadow:inset 3px 0 0 #fda4af}tr.defaulted td{color:#6e5578!important}
+.st.active{background:#e0f2fe!important;color:#1d5a87!important;border-color:#bae6fd!important}
+.st.paid{background:#dcfce7!important;color:#0f6b4f!important;border-color:#a7f3d0!important}
+.st.overdue{background:#ffe4e8!important;color:#a3324e!important;border-color:#fda4af!important}
+.st.defaulted{background:#f1ecf5!important;color:#5b4a66!important;border-color:#e4dcf3!important}
+input,select,textarea{background:#fffdf9!important;border:1px solid #e4dcf3!important;color:#3b1f47!important}
+input::placeholder,textarea::placeholder{color:#6e5578!important}
+input:focus,select:focus,textarea:focus{border-color:#c4b5fd!important;box-shadow:0 0 0 3px rgba(196,181,253,.35)!important}
+select option{background:#fff;color:#3b1f47}
+input[type=date]::-webkit-calendar-picker-indicator{filter:none!important}
+.b{background:#ffffff!important;border:1px solid #e4dcf3!important;color:#3b1f47!important}
+.b:hover{border-color:#e8c872!important;background:#fffaf0!important}.b:active,.mini summary:active,.fold summary:active{transform:scale(.97)}
+.b.p,.p{background:linear-gradient(135deg,#a7f3d0,#f3d98b)!important;color:#3b1f47!important;border:1px solid #e8c872!important;box-shadow:0 4px 14px rgba(232,200,114,.35)!important}
+.b.d,button.d{color:#a3324e!important;border-color:#fda4af!important}
+#export{background:linear-gradient(135deg,#a7f3d0,#f3d98b)!important;color:#3b1f47!important;border:2px solid #e8c872!important;box-shadow:0 3px 12px rgba(232,200,114,.45)!important}
+#cur{background:#fff!important}
+a{color:#0f6b4f!important;text-decoration:underline;text-decoration-color:#e8c872;text-decoration-thickness:2px;text-underline-offset:3px}
+.exp .menu{background:#fff!important;border-color:#e4dcf3!important}.exp .menu a{color:#3b1f47!important;text-decoration:none;border-color:#f4ebe0!important}.exp .menu a:hover{background:#fffaf0!important}
+.exp summary.b{color:#3b1f47!important}
+dialog{background:#fffdf8!important;border:1px solid #f1e8dc!important;color:#3b1f47!important;box-shadow:0 20px 60px rgba(120,80,110,.25)!important}
+dialog::backdrop{background:rgba(255,248,239,.7)!important}.g label,.calc label,.cap{color:#6e5578!important}
+#toast{background:#3b1f47!important;color:#fff!important;border-color:#3b1f47!important}
+.seg button{background:#fff!important;border-color:#e4dcf3!important;color:#5b3f68!important}
+.seg button.on{background:linear-gradient(135deg,#e9d5ff,#fbcfe8)!important;border-color:#c4b5fd!important;color:#3b1f47!important;box-shadow:none!important}
+.err,.od{color:#a3324e!important}.dt{color:#6f5200!important}.inc,.cfe .in{color:#0f6b4f!important}.expc,.cfe .exp{color:#1d5a87!important}.cfe .out{color:#94460f!important}
+.cfe{border-top-color:#f4ebe0!important}.cfe.overdue{background:#fff1f3!important}.cfe.due_today{background:#fef9c3!important}
+.cfday.today{border:1px solid #f3d98b!important;box-shadow:0 0 0 3px #fef3c7!important}.odbox{border-left:4px solid #fda4af!important}
+.lbc .rk{color:#a8326e!important}.lbc .st2{color:#6e5578!important}.lbc .st2 b{color:#3b1f47!important}
+.lbc.gold{border-color:#e8c872!important}.lbc.bronze{border-color:#fed7aa!important}.lbc.silver{border-color:#e2e8f0!important}
+.rev{border-color:#fed7aa!important}
+/* minimal dashboard */
+.hero{position:relative;overflow:hidden;padding:22px!important;margin-bottom:14px;background:linear-gradient(135deg,#ffffff,#fff6fb)!important}
+.blobs{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.hero-in{position:relative}
+.hl{font-size:13px;font-weight:700;color:#6d3fb0;letter-spacing:.04em;text-transform:uppercase}
+.hv{font-size:42px;line-height:1.1;margin:6px 0 10px;color:#3b1f47}
+.hs{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:#5b3f68}.hs b{color:#3b1f47;font-size:16px}.hs small{flex:1 1 100%}
+.pbar{flex:1 1 100%;height:10px;border-radius:99px;background:#f1e8dc;overflow:hidden;margin-top:6px}.pbar i{display:block;height:100%;border-radius:99px}
+.spark{margin-top:10px;height:44px}.spark svg{width:100%;height:44px}
+.mini3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.mini{padding:0!important;cursor:pointer;transition:transform .15s,box-shadow .15s}.mini:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(180,140,120,.16)!important}
+.mini summary{list-style:none;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ic ml" "ic mv" "ic ms";column-gap:12px;padding:16px;align-items:center}
+.mini summary::-webkit-details-marker,.fold summary::-webkit-details-marker{display:none}
+.ic{grid-area:ic;width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-size:22px}
+.ic.mint{background:#d1fae5}.ic.peach{background:#ffedd5}.ic.rose{background:#ffe4e8}
+.ml{grid-area:ml;font-size:13px;font-weight:600;color:#6e5578}.mv{grid-area:mv;font-size:28px;line-height:1.1;color:#3b1f47}.ms{grid-area:ms;font-size:12.5px;color:#6e5578}
+.mini.rose .mv{color:#a3324e}.mini[open]{box-shadow:0 0 0 2px #e9d5ff,0 10px 26px rgba(180,140,120,.14)!important}
+.more{display:flex;gap:14px;align-items:center;padding:0 16px 16px;font-size:13.5px;color:#3b1f47;border-top:1px dashed #f1e8dc;padding-top:12px}
+.ring{width:64px;height:64px;flex:0 0 64px}.ring text{font:800 11px Nunito,system-ui,sans-serif;fill:#3b1f47}
+.fold{padding:0!important;margin-bottom:12px}.fold>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;cursor:pointer;font-weight:700;color:#6d3fb0;font-size:15px}
+.fold>summary .chev{transition:transform .2s;font-size:22px;color:#a78bfa}.fold[open]>summary .chev{transform:rotate(90deg)}
+.fold>*:not(summary){margin:0 14px 14px}.fold .kpis{margin:0 14px 14px}.fold .tw{margin:0 14px 14px}
+.chip{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:700;margin-left:6px}.chip.rose{background:#ffe4e8;color:#a3324e}
+.sm2 button{min-height:36px!important;font-size:14px!important}
+@media (max-width:700px){.mini3{grid-template-columns:1fr;gap:10px}.hv{font-size:36px}.mini summary{padding:14px}.mv{font-size:24px}}
+.kpi .v{overflow-wrap:anywhere}@media (max-width:700px){.kpi .v{font-size:20px!important}}
+#v-home{padding-top:6px}.welcome{position:relative;overflow:hidden;padding:26px 6px 22px}.wblob{position:absolute;right:-10px;top:-6px;width:300px;height:120px;opacity:.95;pointer-events:none}
+.wi{position:relative}.wh{font-family:Nunito,ui-rounded,system-ui,sans-serif;font-weight:900;font-size:30px;color:#3b1f47;letter-spacing:-.01em}.wd{font-size:14px;font-weight:600;color:#6d3fb0;margin-top:2px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:8px 0 22px}
+.tile{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ic tl" "ic tv" "ic ts";column-gap:12px;align-items:center;text-align:left;font:inherit;color:#3b1f47;padding:18px!important;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(180,140,120,.16)!important}.tile:active{transform:scale(.97)}
+.tile .ic{grid-area:ic}.tl{grid-area:tl;font-size:13px;font-weight:600;color:#6e5578}.tv{grid-area:tv;font-size:26px;line-height:1.15;color:#3b1f47}.tv.late{color:#a3324e}.ts{grid-area:ts;font-size:12.5px;color:#6e5578}
+.ic.lav{background:#f3e8ff}.ic.gold{background:#fef3c7}.ic.pink{background:#fce7f3}.ic.blue{background:#e0f2fe}
+.wlinks{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:700px){.tiles{grid-template-columns:1fr 1fr;gap:10px}.tile{grid-template-columns:1fr;grid-template-areas:"ic" "tl" "tv" "ts";row-gap:4px;padding:14px!important}.tv{font-size:22px}.wh{font-size:26px}.wblob{width:220px;opacity:.8}.wlinks .b{flex:1 1 100%}}
+.tile.vis{display:flex;flex-direction:column;align-items:stretch;gap:10px}.tile.vis .tl{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#3b1f47}
+.ic.sm3{width:36px;height:36px;border-radius:12px;font-size:18px;background:#f3e8ff;display:inline-grid;place-items:center}
+.tvis{display:block;min-height:70px}.hbars{width:100%;height:70px;display:block}.pbar.big{height:16px;margin-top:26px}
+.tile.wide{grid-column:1/-1}.dots{display:flex;flex-wrap:wrap;gap:7px}.dots i,.lg i{width:16px;height:16px;border-radius:50%;display:inline-block}
+.lg{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}.lg i{width:10px;height:10px;margin-right:-6px}
+i.ac{background:#c4b5fd}i.ds{background:#fed7aa}i.od{background:#fb9fb1;box-shadow:0 0 0 2px #ffe4e8}i.pd{background:#a7f3d0}i.df{background:#d6cfe0}
+@media (max-width:700px){.tile.vis{grid-column:1/-1}}
 </style></head><body>
 <div id="login" class="card hide"><h2><span class="logo">H</span>Hood Capital</h2><p class="mut">Loan Dashboard · admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
 <div class="err" id="lerr"></div><button class="b p" style="width:100%">Sign in</button></form></div>
 <div id="app" class="hide">
 <header><h1><span class="logo">H</span><span class="brand">Hood Capital<small>Loan Dashboard</small></span> <span class="tag">EXAMPLE DATA</span></h1>
-<nav><button data-v="dash" class="on">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button><button data-v="cash">📅 Cash flow</button><button data-v="calc">🧮 Calculator</button><button data-v="growth">📈 Growth</button><button data-v="leaders">🏆 Leaderboard</button></nav>
+<nav><button data-v="home" class="on">🏠 Home</button><button data-v="dash">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button><button data-v="cash">📅 Cash flow</button><button data-v="calc">🧮 Calculator</button><button data-v="growth">📈 Growth</button><button data-v="leaders">🏆 Leaderboard</button></nav>
 <select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
-<section id="v-dash">
- <div class="kpis" id="kpis"></div>
- <div class="charts"><div class="card"><b>Monthly disbursements vs collections</b><canvas id="c1" height="120"></canvas></div>
- <div class="card"><b>Loans by status</b><canvas id="c2" height="180"></canvas></div></div>
- <div class="bar"><h2>Overdue loans</h2></div><div class="tw"><table id="t-od"></table></div>
+<section id="v-home"><div class="welcome"><svg class="wblob" viewBox="0 0 300 120" aria-hidden="true"><path d="M220 -10c50 5 90 40 75 80s-70 50-110 30-45-60-20-90 30-22 55-20z" fill="#f3e8ff"/><path d="M20 100c10-30 60-40 85-20s15 50-15 55-80-10-70-35z" fill="#dcfce7"/><circle cx="160" cy="25" r="10" fill="#fde68a"/><circle cx="185" cy="95" r="6" fill="#fbcfe8"/></svg>
+ <div class="wi"><div class="wh">Welcome back ✨</div><div class="wd" id="w-date"></div><p class="mut" style="margin:6px 0 0">Here's how Hood Capital is doing today.</p></div></div>
+ <div class="tiles" id="tiles"></div>
+ <div class="wlinks"><button class="b" onclick="view('dash')">📊 Open full dashboard</button><button class="b" onclick="view('cash')">📅 Cash flow</button><button class="b" onclick="view('calc')">🧮 Calculator</button></div>
+</section>
+<section id="v-dash" class="hide">
+ <div class="hero card" id="hero"><svg class="blobs" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="bg1" x1="0" x2="1"><stop offset="0" stop-color="#e9d5ff"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient><linearGradient id="bg2" x1="0" x2="1"><stop offset="0" stop-color="#a7f3d0"/><stop offset="1" stop-color="#fde68a"/></linearGradient></defs><path d="M300 -20c60 10 110 60 90 120s-90 70-140 40-60-90-20-130 40-35 70-30z" fill="url(#bg1)" opacity=".75"/><path d="M-30 150c20-50 90-60 130-30s30 90-20 100-130-20-110-70z" fill="url(#bg2)" opacity=".55"/><circle cx="250" cy="160" r="18" fill="#fed7aa" opacity=".7"/></svg>
+  <div class="hero-in"><div class="hl">✨ Equity today</div><div class="hv num" id="h-eq">—</div><div class="hs" id="h-sub"></div><div id="h-spark" class="spark"></div></div></div>
+ <div class="mini3" id="mini3"></div>
+ <details class="fold card" id="f-num"><summary><span>📊 All the numbers</span><span class="chev">›</span></summary><div class="kpis" id="kpis"></div></details>
+ <details class="fold card" id="f-chart"><summary><span>🌸 Charts</span><span class="chev">›</span></summary>
+  <div class="seg sm2" id="dseg"><button data-c="c1" class="on">Lent vs collected</button><button data-c="c2">By status</button></div>
+  <div class="dch" data-c="c1"><canvas id="c1" height="160"></canvas></div><div class="dch hide" data-c="c2"><canvas id="c2" height="200"></canvas></div></details>
+ <details class="fold card" id="f-od"><summary><span>🌷 Overdue loans <span class="chip rose" id="odn"></span></span><span class="chev">›</span></summary><div class="tw"><table id="t-od"></table></div></details>
 </section>
 <section id="v-loans" class="hide"><div class="bar"><h2>Loans</h2><input id="lq" placeholder="Search borrower / #id"><select id="ls"><option value="">All statuses</option><option>active</option><option>overdue</option><option>paid</option><option>defaulted</option></select><button class="b p" onclick="loanForm()">+ New loan</button></div><div class="tw"><table id="t-loans"></table></div></section>
 <section id="v-borrowers" class="hide"><div class="bar"><h2>Borrowers</h2><input id="bq" placeholder="Search name, phone, email, ID"><button class="b p" onclick="borrowerForm()">+ New borrower</button></div><div class="tw"><table id="t-borrowers"></table></div></section>
@@ -253,11 +358,11 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.85) sepia(.4)
 <dialog id="dlg"><form id="df" method="dialog"></form></dialog><div id="toast"></div>
 <script src="/lib.js"></script>
 <script>
-const C={violet:'#c4b5fd',indigo:'#a78bfa',green:'#a7f3d0',coral:'#fda4af',amber:'#fed7aa',fuchsia:'#f9a8d4',blue:'#bae6fd',cyan:'#bae6fd',grey:'#d9cde6',teal:'#a7f3d0'};
-if(window.Chart){Object.assign(Chart.defaults,{color:'#e9d5ff',borderColor:'#2e2238'});Chart.defaults.font.family="Inter,system-ui,-apple-system,sans-serif";
- Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'rgba(29,18,38,.96)',borderColor:'#f9a8d4',borderWidth:1,titleColor:'#fff',bodyColor:'#e9e3ff',padding:10,cornerRadius:10,boxPadding:4});
- Chart.defaults.plugins.legend.labels.color='#e9d5ff';Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.elements.bar.borderRadius=5;Chart.defaults.elements.line.borderWidth=2.5;Chart.defaults.elements.point.radius=2.5;
- Chart.defaults.datasets.doughnut={...(Chart.defaults.datasets.doughnut||{}),borderColor:'#140d1a',borderWidth:3};Chart.defaults.scale.grid.color='#2a1f33';Chart.defaults.scale.ticks.color='#cbbcd9'}
+const C={violet:'#b9a3f5',indigo:'#a78bfa',green:'#6fd6ae',coral:'#f49fb0',amber:'#f6b98a',fuchsia:'#e88ac0',blue:'#8ccbf0',cyan:'#7fc8e8',grey:'#cfc3d9',teal:'#6fd6ae',lav:'#d4bff7',gold:'#e8c872'};
+if(window.Chart){Object.assign(Chart.defaults,{color:'#5b3f68',borderColor:'#efe4d6'});Chart.defaults.font.family="Inter,system-ui,-apple-system,sans-serif";
+ Object.assign(Chart.defaults.plugins.tooltip,{backgroundColor:'rgba(255,255,255,.97)',borderColor:'#e4dcf3',borderWidth:1,titleColor:'#3b1f47',bodyColor:'#3b1f47',padding:10,cornerRadius:10,boxPadding:4});
+ Chart.defaults.plugins.legend.labels.color='#5b3f68';Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.elements.bar.borderRadius=8;Chart.defaults.elements.bar.borderSkipped=false;Chart.defaults.elements.line.borderWidth=2.5;Chart.defaults.elements.point.radius=2.5;
+ Chart.defaults.datasets.doughnut={...(Chart.defaults.datasets.doughnut||{}),borderColor:'#ffffff',borderWidth:3};Chart.defaults.scale.grid.color='#f1e8dc';Chart.defaults.scale.ticks.color='#6e5578'}
 const $=s=>document.querySelector(s);let CUR='XAF',charts={},cache={};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=v=>{try{return new Intl.NumberFormat('fr-CM',{style:'currency',currency:CUR,maximumFractionDigits:CUR==='XAF'||CUR==='XOF'?0:2}).format(v||0)}catch{return (v||0).toLocaleString()+' '+CUR}};
@@ -286,15 +391,15 @@ $('#c2loan').onclick=()=>{const o=calcIn();loanForm(null,null,{principal:o.princ
 const pct=v=>v==null?'<div class="gr mut">— vs prev.</div>':`<div class="gr ${v>=0?'up':'dn'}">${v>=0?'▲':'▼'} ${Math.abs(v).toLocaleString('fr-FR',{maximumFractionDigits:1})}% vs prev.</div>`;
 async function loadGrowth(){const g=await api('/growth?period='+$('#gp').value);$('#capi').value=g.starting_capital;$('#gempty').classList.toggle('hide',!g.empty);const c=g.current,gp=g.growth_pct,lbl=g.period==='week'?'this week':'this month';
  $('#gk').innerHTML=[['Lent '+lbl,'lent',1],['Collected '+lbl,'collected',1],['Interest earned '+lbl,'interest_earned',1],['New loans '+lbl,'new_loans'],['Active borrowers','active_borrowers'],['New borrowers','new_borrowers'],['Outstanding book','outstanding_book',1],['Cumulative profit','cumulative_profit',1],['Equity','equity',1],['Cash on hand','cash_on_hand',1],['Out on loan','on_loan',1]]
-  .map(([l,k,m])=>`<div class="card kpi"><div class="l">${l}</div><div class="v">${m?money(c[k]):c[k]}</div>${pct(gp[k])}</div>`).join('');
+  .map(([l,k,m])=>`<div class="card kpi"><div class="l">${l}</div><div class="v num" title="${m?money(c[k]):c[k]}">${m?cm(c[k]):c[k]}</div>${pct(gp[k])}</div>`).join('');
  const s=g.series,L=s.map(x=>g.period==='week'?fd(x.period):fd(x.period.slice(0,7))),xt={title:{display:true,text:g.period==='week'?'Week starting (DD/MM/YYYY)':'Month (MM/YYYY)'}},opt={responsive:true,animation:false,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{title:i=>(g.period==='week'?'Week of ':'Month ')+i[0].label}}}},mo={...opt,scales:{x:xt,y:{beginAtZero:true,ticks:{callback:v=>money(v)}}}};
  const mk=(id,cfg)=>{charts[id]?.destroy();charts[id]=new Chart($('#'+id),cfg)};
- mk('g5',{type:'bar',data:{labels:L,datasets:[{label:'Revenue (interest collected)',data:s.map(x=>x.interest_earned),backgroundColor:C.amber,order:2},{type:'line',label:'Equity',data:s.map(x=>x.equity),borderColor:C.fuchsia,backgroundColor:C.fuchsia,pointRadius:4,tension:.2,order:1}]},
+ mk('g5',{type:'bar',data:{labels:L,datasets:[{label:'Revenue (interest collected)',data:s.map(x=>x.interest_earned),backgroundColor:C.amber,order:2},{label:'Equity',data:s.map(x=>x.equity),backgroundColor:C.violet,order:1}]},
   options:{...mo,interaction:{mode:'index',intersect:false},plugins:{...opt.plugins,tooltip:{callbacks:{title:i=>(g.period==='week'?'Week of ':'Month ')+i[0].label,label:c=>`${c.dataset.label}: ${money(c.parsed.y)}`,afterBody:it=>{const x=s[it[0].dataIndex];return [`Cash on hand: ${money(x.cash_on_hand)}`,`Out on loan: ${money(x.on_loan)}`,`Write-offs: ${money(x.write_offs)}`]}}}}}});
  mk('g1',{type:'bar',data:{labels:L,datasets:[{label:'Lent',data:s.map(x=>x.lent),backgroundColor:C.violet},{label:'Collected',data:s.map(x=>x.collected),backgroundColor:C.green}]},options:mo});
- mk('g2',{type:'bar',data:{labels:L,datasets:[{label:'Interest earned',data:s.map(x=>x.interest_earned),backgroundColor:C.amber},{type:'line',label:'Cumulative profit',data:s.map(x=>x.cumulative_profit),borderColor:C.fuchsia,tension:.2}]},options:mo});
- mk('g3',{type:'line',data:{labels:L,datasets:[{label:'Outstanding book',data:s.map(x=>x.outstanding_book),borderColor:C.coral,backgroundColor:'rgba(253,164,175,.15)',fill:true,tension:.2}]},options:mo});
- mk('g4',{type:'bar',data:{labels:L,datasets:[{label:'New loans',data:s.map(x=>x.new_loans),backgroundColor:C.blue},{label:'New borrowers',data:s.map(x=>x.new_borrowers),backgroundColor:C.green},{type:'line',label:'Active borrowers',data:s.map(x=>x.active_borrowers),borderColor:C.fuchsia}]},options:{...opt,scales:{x:xt,y:{beginAtZero:true,ticks:{precision:0}}}}})}
+ mk('g2',{type:'bar',data:{labels:L,datasets:[{label:'Interest earned',data:s.map(x=>x.interest_earned),backgroundColor:C.amber},{label:'Cumulative profit',data:s.map(x=>x.cumulative_profit),backgroundColor:C.fuchsia}]},options:mo});
+ mk('g3',{type:'bar',data:{labels:L,datasets:[{label:'Outstanding book',data:s.map(x=>x.outstanding_book),backgroundColor:C.lav}]},options:mo});
+ mk('g4',{type:'bar',data:{labels:L,datasets:[{label:'New loans',data:s.map(x=>x.new_loans),backgroundColor:C.violet},{label:'New borrowers',data:s.map(x=>x.new_borrowers),backgroundColor:C.blue},{label:'Active borrowers',data:s.map(x=>x.active_borrowers),backgroundColor:C.gold}]},options:{...opt,scales:{x:xt,y:{beginAtZero:true,ticks:{precision:0}}}}})}
 $('#gp').onchange=loadGrowth;
 $('#caps').onclick=async()=>{try{await api('/settings',{method:'PUT',body:{starting_capital:$('#capi').value}});toast('Starting capital saved');loadGrowth()}catch(e){alert(e.message)}};
 async function loadLeaders(){const r=await api('/leaderboard?sort='+$('#lbs').value);const md={gold:'🥇',silver:'🥈',bronze:'🥉'};
@@ -313,20 +418,55 @@ function show(on){$('#app').classList.toggle('hide',!on);$('#login').classList.t
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await api('/login',{method:'POST',body:Object.fromEntries(f)});show(true);boot()}catch(x){$('#lerr').textContent=x.message}};
 $('#logout').onclick=async()=>{await api('/logout',{method:'POST'});show(false)};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>view(b.dataset.v));
-function view(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['dash','loans','borrowers','repayments','cash','calc','growth','leaders'].forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));refresh(v)}
+function view(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['home','dash','loans','borrowers','repayments','cash','calc','growth','leaders'].forEach(x=>$('#v-'+x).classList.toggle('hide',x!==v));if(location.hash.slice(1)!==v)history.replaceState(null,'','#'+v);document.querySelector('nav button.on')?.scrollIntoView({inline:'nearest',block:'nearest'});scrollTo(0,0);refresh(v)}
+window.addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(document.querySelector(`nav button[data-v="${v}"]`)&&!$('#app').classList.contains('hide'))view(v)});
 const cur=()=>document.querySelector('nav button.on').dataset.v;
 const deb=(f,ms=250)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
 ['#lq','#ls'].forEach(s=>$(s).oninput=deb(loadLoans));['#bq'].forEach(s=>$(s).oninput=deb(loadBorrowers));['#rq','#rm','#rf','#rt'].forEach(s=>$(s).oninput=deb(loadRepayments));
 $('#cur').onchange=async e=>{await api('/settings',{method:'PUT',body:{currency:e.target.value}});CUR=e.target.value;refresh(cur());toast('Currency set to '+CUR)};
-async function boot(){const s=await api('/settings');CUR=s.currency;const opts=['XAF','XOF','NGN','EUR','USD','GBP'];if(!opts.includes(CUR))opts.unshift(CUR);$('#cur').innerHTML=opts.map(c=>`<option ${c===CUR?'selected':''}>${c}</option>`).join('');view('dash')}
-function refresh(v){({cash:loadCash,calc:calc,growth:loadGrowth,leaders:loadLeaders,dash:loadDash,loans:loadLoans,borrowers:loadBorrowers,repayments:loadRepayments})[v]()}
+async function boot(){const s=await api('/settings');CUR=s.currency;const opts=['XAF','XOF','NGN','EUR','USD','GBP'];if(!opts.includes(CUR))opts.unshift(CUR);$('#cur').innerHTML=opts.map(c=>`<option ${c===CUR?'selected':''}>${c}</option>`).join('');{const v=location.hash.slice(1);view(document.querySelector(`nav button[data-v="${v}"]`)?v:'home')}}
+function refresh(v){({home:loadHome,cash:loadCash,calc:calc,growth:loadGrowth,leaders:loadLeaders,dash:loadDash,loans:loadLoans,borrowers:loadBorrowers,repayments:loadRepayments})[v]()}
 const st=s=>`<span class="st ${s}">${s}</span>`;
 function loanRows(rows){return `<tr><th>#</th><th>Borrower</th><th>Principal</th><th>Interest</th><th>Term</th><th>Disbursed</th><th>Due date</th><th>Total due</th><th>Paid</th><th>Outstanding</th><th>Arrears</th><th>Next due</th><th>Status</th><th></th></tr>`+
  rows.map(l=>`<tr class="${l.effective_status}"><td>${l.id}</td><td>${esc(l.borrower_name)}</td><td class="n">${money(l.principal)}</td><td>${l.model==='short'?l.interest_pct+'% · '+money(l.expected_interest):l.interest_rate+'%/yr'}</td><td>${l.model==='short'?l.term_days+'d'+(l.installments>1?' · '+l.installments+' inst.':' · lump'):l.term_months+'m '+l.repayment_frequency}</td><td>${fd(l.start_date)}</td><td class="${l.outstanding>0.01&&l.end_date<TODAY()?'od':l.outstanding>0.01&&l.end_date===TODAY()?'dt':''}">${fd(l.end_date)}</td><td class="n">${money(l.total_due)}</td><td class="n">${money(l.total_paid)}</td><td class="n">${money(l.outstanding)}</td><td class="n">${l.arrears?money(l.arrears):'—'}</td><td class="${l.outstanding>0.01&&l.next_due_date&&l.next_due_date<TODAY()?'od':l.outstanding>0.01&&l.next_due_date===TODAY()?'dt':''}">${l.outstanding>0.01?fd(l.next_due_date):'—'}</td><td>${st(l.effective_status)}</td>
  <td>${l.outstanding>0?`<button class="b sm p" onclick="payForm(${l.id})">Record payment</button> `:''}<button class="b sm" onclick="sched(${l.id})">Schedule</button> <button class="b sm" onclick="loanForm(${l.id})">Edit</button> <button class="b sm d" onclick="del('loans',${l.id})">Delete</button></td></tr>`).join('')||'<tr><td class="mut">No loans</td></tr>'}
+document.addEventListener('toggle',e=>{if(e.target.id==='f-chart'&&e.target.open)Object.values(charts).forEach(c=>c?.resize())},true);
+const cm=v=>{v=+v||0;const a=Math.abs(v),s=v<0?'−':'';return s+(a>=1e6?(a/1e6).toFixed(a>=1e7?0:1).replace(/\.0$/,'')+'M':a>=1e3?Math.round(a/1e3)+'k':Math.round(a))+' '+CUR};
+const spark=vals=>{if(!vals.length)return '';const P=['#c4b5fd','#f9a8d4','#a7f3d0','#fed7aa','#e9d5ff','#bae6fd','#f3d98b'],w=220,hh=44,mx=Math.max(...vals.map(v=>Math.abs(v)))||1,bw=w/vals.length;
+ return `<svg viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none">${vals.map((v,i)=>{const bh=Math.max(3,Math.abs(v)/mx*(hh-4));return `<rect x="${(i*bw+bw*.15).toFixed(1)}" y="${(hh-bh).toFixed(1)}" width="${(bw*.7).toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(4,bw*.35).toFixed(1)}" fill="${P[i%P.length]}"/>`}).join('')}</svg>`};
+const ring=(pct,col)=>{pct=Math.max(0,Math.min(100,pct||0));const c=2*Math.PI*20;return `<svg class="ring" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#f1e8dc" stroke-width="6"/><circle cx="24" cy="24" r="20" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(c*pct/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 24 24)"/><text x="24" y="28" text-anchor="middle">${Math.round(pct)}%</text></svg>`};
+const pbar=(pct,col)=>`<div class="pbar"><i style="width:${Math.max(0,Math.min(100,pct||0))}%;background:${col}"></i></div>`;
+document.addEventListener('click',e=>{const b=e.target.closest('#dseg button');if(!b)return;document.querySelectorAll('#dseg button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.dch').forEach(x=>x.classList.toggle('hide',x.dataset.c!==b.dataset.c));charts[b.dataset.c]?.resize()});
+async function loadHome(){const d=new Date();$('#w-date').textContent=d.toLocaleDateString('en-GB',{weekday:'long'})+' · '+d.toLocaleDateString('en-GB',{month:'long'});
+ const [s,g,gw,cf,loans]=await Promise.all([api('/summary'),api('/growth?period=month'),api('/growth?period=week'),api('/cashflow?range=next7'),api('/loans')]);const c=g.current;
+ const P=['#c4b5fd','#f9a8d4','#a7f3d0','#fed7aa','#e9d5ff','#bae6fd','#f3d98b'];
+ const bars=(vals)=>{const v=vals.map(x=>Math.max(0,x)),mx=Math.max(...v)||1,w=240,hh=70,bw=w/v.length;return `<svg class="hbars" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true">${v.map((x,i)=>{const bh=Math.max(4,x/mx*(hh-6));return `<rect x="${(i*bw+bw*.14).toFixed(1)}" y="${(hh-bh).toFixed(1)}" width="${(bw*.72).toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(6,bw*.3).toFixed(1)}" fill="${P[i%P.length]}"/>`}).join('')}</svg>`};
+ const prog=(f,col)=>`<div class="pbar big"><i style="width:${(Math.max(0,Math.min(1,f||0))*100).toFixed(1)}%;background:${col}"></i></div>`;
+ const soon=new Set(cf.days.flatMap(x=>x.events.filter(e=>e.type==='expected').map(e=>e.loan_id)));
+ const cls=l=>l.effective_status==='overdue'?'od':l.effective_status==='paid'?'pd':l.effective_status==='defaulted'?'df':soon.has(l.id)?'ds':'ac';
+ const dots=loans.length?`<div class="dots">${loans.map(l=>`<i class="${cls(l)}"></i>`).join('')}</div>`:'<div class="mut">No loans yet — your first one will appear here 🌱</div>';
+ const avail=Math.max(0,c.cash_on_hand),dep=c.on_loan,coll=s.total_collected/((s.total_collected+s.total_outstanding)||1);
+ const T=[
+  ['growth','💜','Growing over time',bars(g.series.map(x=>x.equity)),'Equity, month by month'],
+  ['growth','🍯','Interest coming in',bars(gw.series.map(x=>x.interest_earned)),'Week by week'],
+  ['loans','🌸','Collected so far',prog(coll,'linear-gradient(90deg,#a7f3d0,#f3d98b)'),'Collected vs still expected'],
+  ['growth','🌿','Money at work',prog(dep/((avail+dep)||1),'linear-gradient(90deg,#c4b5fd,#f9a8d4)'),'Out on loan vs cash available'],
+  ['cash','🫧','Every loan at a glance',dots,'<span class="lg"><i class="ac"></i>active <i class="ds"></i>due soon <i class="od"></i>overdue <i class="pd"></i>paid <i class="df"></i>defaulted</span>']];
+ $('#tiles').innerHTML=T.map(([go,i,l,vis,sub],k)=>`<button class="tile card vis ${k===4?'wide':''}" onclick="view('${go}')"><span class="tl"><span class="ic sm3">${i}</span>${l}</span><span class="tvis">${vis}</span><span class="ts">${sub}</span></button>`).join('')}
 async function loadDash(){const s=await api('/summary');
+ Promise.all([api('/growth?period=month'),api('/cashflow?range=next7')]).then(([g,cf])=>{const c=g.current;$('#h-eq').textContent=cm(c.equity);
+  const avail=Math.max(0,c.cash_on_hand),dep=c.on_loan,tot=avail+dep;
+  $('#h-sub').innerHTML=`<span>💵 Cash available <b class="num">${cm(c.cash_on_hand)}</b></span><span>🌱 Out on loan <b class="num">${cm(dep)}</b></span>${pbar(tot?dep/tot*100:0,'linear-gradient(90deg,#a78bfa,#f472b6)')}<small class="mut">Capital deployed vs available</small>`;
+  $('#h-spark').innerHTML=spark(g.series.map(x=>x.equity));
+  const exp=cf.days.reduce((a,d)=>a+d.events.filter(e=>e.type==='expected').length,0),active=s.loans_by_status.active+s.loans_by_status.overdue,collPct=(s.total_collected/((s.total_collected+s.total_outstanding)||1))*100;
+  $('#mini3').innerHTML=[
+   ['🌿','mint','Active loans',active,`${cm(s.total_outstanding)} outstanding`,`${ring(collPct,'#34d399')}<div><b>Collected vs expected</b><br>${cm(s.total_collected)} of ${cm(s.total_collected+s.total_outstanding)}<br><a href="#" onclick="view('loans');return false">See all loans →</a></div>`],
+   ['⏰','peach','Due soon',exp,`${cm(cf.totals.in_expected)} in 7 days`,`<div><b>Due today</b> ${cm(cf.due_today_total)}<br>${cf.days.slice(0,3).map(d=>`${fd(d.date)} · ${cm(d.in_expected)}`).join('<br>')||'Nothing due 🎉'}<br><a href="#" onclick="view('cash');return false">Open cash flow →</a></div>`],
+   ['🌷','rose','Overdue',s.overdue_count,`${cm(s.overdue_amount)} late`,`${ring(s.loan_count?s.overdue_count/s.loan_count*100:0,'#f472b6')}<div><b>Share of loans overdue</b><br>${s.overdue_count} of ${s.loan_count} loans<br><a href="#" onclick="document.querySelector('#f-od').open=true;document.querySelector('#f-od').scrollIntoView({behavior:'smooth'});return false">Show overdue list →</a></div>`]]
+   .map(([i,t,l,v,sub,more])=>`<details class="mini card ${t}"><summary><span class="ic ${t}">${i}</span><span class="ml">${l}</span><span class="mv num">${v}</span><span class="ms">${sub}</span></summary><div class="more">${more}</div></details>`).join('');
+  $('#odn').textContent=s.overdue_count}).catch(()=>{});
  const k=[['Total lent',s.total_lent],['Total collected',s.total_collected],['Outstanding',s.total_outstanding],['Expected interest',s.expected_interest],['Overdue loans',s.overdue_count,1,1],['Overdue amount',s.overdue_amount,1],['Borrowers',s.borrower_count,0,1],['Loans',s.loan_count,0,1]];
- $('#kpis').innerHTML=k.map(([l,v,bad,cnt])=>`<div class="card kpi ${bad&&v?'bad':''}"><div class="l">${l}</div><div class="v">${cnt?v:money(v)}</div></div>`).join('');
+ $('#kpis').innerHTML=k.map(([l,v,bad,cnt])=>`<div class="card kpi ${bad&&v?'bad':''}" title="${cnt?v:money(v)}"><div class="l">${l}</div><div class="v num">${cnt?v:cm(v)}</div><div class="kx">${cnt?'':money(v)}</div></div>`).join('');
  const t=s.monthly_trends;charts.c1?.destroy();charts.c1=new Chart($('#c1'),{type:'bar',data:{labels:t.map(x=>fd(x.month)),datasets:[{label:'Disbursed',data:t.map(x=>x.disbursed),backgroundColor:C.violet},{label:'Collected',data:t.map(x=>x.collected),backgroundColor:C.green}]},options:{responsive:true,animation:false,plugins:{tooltip:{callbacks:{title:i=>'Month '+i[0].label,label:c=>`${c.dataset.label}: ${money(c.parsed.y)}`}}},scales:{x:{title:{display:true,text:'Month (MM/YYYY)'}},y:{title:{display:true,text:CUR},ticks:{callback:v=>money(v)}}}}});
  const b=s.loans_by_status;charts.c2?.destroy();charts.c2=new Chart($('#c2'),{type:'doughnut',data:{labels:Object.keys(b),datasets:[{data:Object.values(b),backgroundColor:[C.blue,C.green,C.coral,C.grey]}]},options:{animation:false}});
  $('#t-od').innerHTML=loanRows(await api('/loans?status=overdue'))}
