@@ -299,6 +299,38 @@ dialog::backdrop{background:rgba(255,248,239,.7)!important}.g label,.calc label,
 .lg{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}.lg i{width:10px;height:10px;margin-right:-6px}
 i.ac{background:#c4b5fd}i.ds{background:#fed7aa}i.od{background:#fb9fb1;box-shadow:0 0 0 2px #ffe4e8}i.pd{background:#a7f3d0}i.df{background:#d6cfe0}
 @media (max-width:700px){.tile.vis{grid-column:1/-1}}
+/* ===== Prop-firm account look ===== */
+body{font-family:Inter,system-ui,-apple-system,sans-serif}
+header{background:rgba(255,255,255,.78)!important;box-shadow:0 1px 0 #efe4d6,0 8px 24px rgba(120,90,140,.06)!important}
+nav{background:#f6f0fb;border:1px solid #ece3f6;border-radius:14px;padding:4px;gap:2px!important}
+nav button{border-radius:10px!important;font-weight:600;font-size:14px!important}nav button.on{box-shadow:0 2px 8px rgba(109,63,176,.14)!important}
+.glass{background:rgba(255,255,255,.82)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(228,220,243,.9)!important}
+.acct{padding:20px!important;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(250,243,255,.92))!important}
+.acct-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.acct-k{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6e5578}
+.acct-n{font-size:18px;font-weight:800;color:#3b1f47;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}
+.acct-meta{display:flex;gap:18px;flex-wrap:wrap}.acct-meta div{display:flex;flex-direction:column;font-size:11.5px;color:#6e5578}.acct-meta b{font-size:14px;color:#3b1f47}
+.acct-main{display:grid;grid-template-columns:1fr 1.4fr;gap:18px;margin-top:16px;align-items:end}
+.acct-eq{font-size:44px;line-height:1.05;color:#3b1f47;margin:4px 0}.chg{font-weight:800;font-family:Nunito,system-ui,sans-serif}.chg.up{color:#0f6b4f}.chg.dn{color:#a3324e}.acct-ch{font-size:13px}
+.acct-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.as{background:#fffdf9;border:1px solid #f1e8dc;border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;grid-template-areas:"i k" "i v";column-gap:10px;align-items:center}
+.asi{grid-area:i;font-size:18px;width:34px;height:34px;border-radius:10px;background:#f3e8ff;display:grid;place-items:center}.ask{grid-area:k;font-size:12px;color:#6e5578}.as b{grid-area:v;font-size:16px;color:#3b1f47}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700;border:1px solid;white-space:nowrap}
+.badge.live,.badge.pass{background:#dcfce7;color:#0f6b4f;border-color:#a7f3d0}.badge.ok{background:#f3e8ff;color:#6d3fb0;border-color:#e4dcf3}
+.badge.prog{background:#fef3c7;color:#6f5200;border-color:#f3d98b}.badge.warn,.badge.watch{background:#ffe4e8;color:#a3324e;border-color:#fda4af}
+.pgrid{display:grid;grid-template-columns:1fr 1.3fr;gap:14px}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}.ph b{font-size:15px;color:#6d3fb0}.sm4{font-size:11.5px}
+.orow{padding:12px 0;border-top:1px solid #f4ebe0}.orow:first-child{border-top:0;padding-top:2px}
+.ot{display:flex;justify-content:space-between;align-items:center;gap:8px}.ot b{color:#3b1f47!important;font-size:14px}
+.od2{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:#6e5578;margin:4px 0 2px}.od2 b{color:#3b1f47!important;font-size:15px}
+.eqc #ceq{width:100%}
+.kpis.stat{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px}
+.kpis.stat .kpi{padding:12px 14px!important}.kpis.stat .kpi::before{display:none}.ki{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:#f3e8ff;margin-right:7px;font-size:13px;vertical-align:middle;text-transform:none}
+.kpis.stat .kpi .l{display:flex;align-items:center;text-transform:none;letter-spacing:0;font-size:12.5px}.kpis.stat .kpi .v{font-size:21px!important}
+.welcome{padding:22px 4px 18px}.wst{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tile.vis .tl{flex-wrap:wrap}
+@media (max-width:800px){.pgrid{grid-template-columns:1fr}.acct-main{grid-template-columns:1fr}.acct-eq{font-size:38px}}
+@media (max-width:700px){.kpis.stat{grid-template-columns:1fr 1fr}.kpis.stat .kpi .v{font-size:19px!important}.acct-meta{gap:14px}}
 </style></head><body>
 <div id="login" class="card hide"><h2><span class="logo">H</span>Hood Capital</h2><p class="mut">Loan Dashboard · admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
@@ -309,19 +341,26 @@ i.ac{background:#c4b5fd}i.ds{background:#fed7aa}i.od{background:#fb9fb1;box-shad
 <select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
 <section id="v-home"><div class="welcome"><svg class="wblob" viewBox="0 0 300 120" aria-hidden="true"><path d="M220 -10c50 5 90 40 75 80s-70 50-110 30-45-60-20-90 30-22 55-20z" fill="#f3e8ff"/><path d="M20 100c10-30 60-40 85-20s15 50-15 55-80-10-70-35z" fill="#dcfce7"/><circle cx="160" cy="25" r="10" fill="#fde68a"/><circle cx="185" cy="95" r="6" fill="#fbcfe8"/></svg>
- <div class="wi"><div class="wh">Welcome back ✨</div><div class="wd" id="w-date"></div><p class="mut" style="margin:6px 0 0">Here's how Hood Capital is doing today.</p></div></div>
+ <div class="wi"><div class="acct-k">Lending account · Hood Capital</div><div class="wh">Welcome back ✨</div><div class="wd" id="w-date"></div><p class="mut" style="margin:6px 0 0">Here's how Hood Capital is doing today.</p><div class="wst" id="w-st"></div></div></div>
  <div class="tiles" id="tiles"></div>
  <div class="wlinks"><button class="b" onclick="view('dash')">📊 Open full dashboard</button><button class="b" onclick="view('cash')">📅 Cash flow</button><button class="b" onclick="view('calc')">🧮 Calculator</button></div>
 </section>
 <section id="v-dash" class="hide">
- <div class="hero card" id="hero"><svg class="blobs" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="bg1" x1="0" x2="1"><stop offset="0" stop-color="#e9d5ff"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient><linearGradient id="bg2" x1="0" x2="1"><stop offset="0" stop-color="#a7f3d0"/><stop offset="1" stop-color="#fde68a"/></linearGradient></defs><path d="M300 -20c60 10 110 60 90 120s-90 70-140 40-60-90-20-130 40-35 70-30z" fill="url(#bg1)" opacity=".75"/><path d="M-30 150c20-50 90-60 130-30s30 90-20 100-130-20-110-70z" fill="url(#bg2)" opacity=".55"/><circle cx="250" cy="160" r="18" fill="#fed7aa" opacity=".7"/></svg>
-  <div class="hero-in"><div class="hl">✨ Equity today</div><div class="hv num" id="h-eq">—</div><div class="hs" id="h-sub"></div><div id="h-spark" class="spark"></div></div></div>
- <div class="mini3" id="mini3"></div>
- <details class="fold card" id="f-num"><summary><span>📊 All the numbers</span><span class="chev">›</span></summary><div class="kpis" id="kpis"></div></details>
- <details class="fold card" id="f-chart"><summary><span>🌸 Charts</span><span class="chev">›</span></summary>
+ <div class="acct card glass">
+  <div class="acct-top"><div><div class="acct-k">Lending account</div><div class="acct-n">Hood Capital <span class="badge live" id="a-status">● Active</span></div></div><div class="acct-meta" id="a-meta"></div></div>
+  <div class="acct-main"><div><div class="acct-k">Equity</div><div class="acct-eq num" id="h-eq">—</div><div class="acct-ch" id="a-ch"></div></div>
+   <div class="acct-stats" id="h-sub"></div></div></div>
+ <div class="pgrid">
+  <div class="card glass obj"><div class="ph"><b>🎯 Objectives</b><span class="mut sm4">Targets are display goals</span></div><div id="objs"></div></div>
+  <div class="card glass eqc"><div class="ph"><b>📊 Equity</b><div class="seg sm2" id="eqseg"><button data-p="week">Week</button><button data-p="month" class="on">Month</button></div></div><canvas id="ceq" height="190"></canvas><div id="h-spark" class="hide"></div></div>
+ </div>
+ <div class="ph" style="margin:18px 2px 8px"><b>📈 Account statistics</b></div>
+ <div class="kpis stat" id="kpis"></div>
+ <div class="mini3 hide" id="mini3"></div>
+ <details class="fold card glass" id="f-chart"><summary><span>🌸 Lending activity</span><span class="chev">›</span></summary>
   <div class="seg sm2" id="dseg"><button data-c="c1" class="on">Lent vs collected</button><button data-c="c2">By status</button></div>
   <div class="dch" data-c="c1"><canvas id="c1" height="160"></canvas></div><div class="dch hide" data-c="c2"><canvas id="c2" height="200"></canvas></div></details>
- <details class="fold card" id="f-od"><summary><span>🌷 Overdue loans <span class="chip rose" id="odn"></span></span><span class="chev">›</span></summary><div class="tw"><table id="t-od"></table></div></details>
+ <details class="fold card glass" id="f-od"><summary><span>🌷 Overdue loans <span class="chip rose" id="odn"></span></span><span class="chev">›</span></summary><div class="tw"><table id="t-od"></table></div></details>
 </section>
 <section id="v-loans" class="hide"><div class="bar"><h2>Loans</h2><input id="lq" placeholder="Search borrower / #id"><select id="ls"><option value="">All statuses</option><option>active</option><option>overdue</option><option>paid</option><option>defaulted</option></select><button class="b p" onclick="loanForm()">+ New loan</button></div><div class="tw"><table id="t-loans"></table></div></section>
 <section id="v-borrowers" class="hide"><div class="bar"><h2>Borrowers</h2><input id="bq" placeholder="Search name, phone, email, ID"><button class="b p" onclick="borrowerForm()">+ New borrower</button></div><div class="tw"><table id="t-borrowers"></table></div></section>
@@ -452,21 +491,35 @@ async function loadHome(){const d=new Date();$('#w-date').textContent=d.toLocale
   ['loans','🌸','Collected so far',prog(coll,'linear-gradient(90deg,#a7f3d0,#f3d98b)'),'Collected vs still expected'],
   ['growth','🌿','Money at work',prog(dep/((avail+dep)||1),'linear-gradient(90deg,#c4b5fd,#f9a8d4)'),'Out on loan vs cash available'],
   ['cash','🫧','Every loan at a glance',dots,'<span class="lg"><i class="ac"></i>active <i class="ds"></i>due soon <i class="od"></i>overdue <i class="pd"></i>paid <i class="df"></i>defaulted</span>']];
- $('#tiles').innerHTML=T.map(([go,i,l,vis,sub],k)=>`<button class="tile card vis ${k===4?'wide':''}" onclick="view('${go}')"><span class="tl"><span class="ic sm3">${i}</span>${l}</span><span class="tvis">${vis}</span><span class="ts">${sub}</span></button>`).join('')}
+ const eqs=g.series.map(x=>x.equity),up=eqs.length>1&&eqs[eqs.length-1]>=eqs[0],ints=gw.series.map(x=>x.interest_earned),intUp=ints.slice(-4).reduce((a,b)=>a+b,0)>0;
+ const CH=[up?['pass','Trending up']:['prog','Building'],intUp?['pass','Flowing']:['prog','Quiet'],coll>=.8?['pass','On track']:['prog','In progress'],dep/((avail+dep)||1)<=.9?['ok','Healthy']:['warn','Fully deployed'],s.overdue_count?['warn','Needs attention']:['pass','All clear']];
+ $('#w-st').innerHTML=`<span class="badge ${s.overdue_count?'watch':'live'}">● ${s.overdue_count?'Active · watch overdue':'Active'}</span><span class="badge ok">${up?'Growing':'Steady'}</span>`;
+ $('#tiles').innerHTML=T.map(([go,i,l,vis,sub],k)=>`<button class="tile card glass vis ${k===4?'wide':''}" onclick="view('${go}')"><span class="tl"><span class="ic sm3">${i}</span>${l}<span class="badge ${CH[k][0]}" style="margin-left:auto">${CH[k][1]}</span></span><span class="tvis">${vis}</span><span class="ts">${sub}</span></button>`).join('')}
+async function eqChart(per){document.querySelectorAll('#eqseg button').forEach(b=>b.classList.toggle('on',b.dataset.p===per));const g=await api('/growth?period='+per),s=g.series;
+ const P=['#b9a3f5','#e88ac0','#6fd6ae','#f6b98a','#d4bff7','#8ccbf0','#e8c872'];charts.ceq?.destroy();
+ charts.ceq=new Chart($('#ceq'),{type:'bar',data:{labels:s.map(x=>per==='week'?fd(x.period):fd(x.period.slice(0,7))),datasets:[{label:'Equity',data:s.map(x=>x.equity),backgroundColor:s.map((x,i)=>P[i%P.length])}]},
+  options:{responsive:true,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>(per==='week'?'Week of ':'Month ')+i[0].label,label:c=>'Equity: '+money(c.parsed.y),afterLabel:c=>{const x=s[c.dataIndex];return ['Cash on hand: '+money(x.cash_on_hand),'Out on loan: '+money(x.on_loan)]}}}},
+  scales:{x:{grid:{display:false},title:{display:true,text:per==='week'?'Week starting':'Month'}},y:{ticks:{callback:v=>cm(v)}}}}})}
+document.addEventListener('click',e=>{const b=e.target.closest('#eqseg button');if(b)eqChart(b.dataset.p)});
 async function loadDash(){const s=await api('/summary');
- Promise.all([api('/growth?period=month'),api('/cashflow?range=next7')]).then(([g,cf])=>{const c=g.current;$('#h-eq').textContent=cm(c.equity);
-  const avail=Math.max(0,c.cash_on_hand),dep=c.on_loan,tot=avail+dep;
-  $('#h-sub').innerHTML=`<span>💵 Cash available <b class="num">${cm(c.cash_on_hand)}</b></span><span>🌱 Out on loan <b class="num">${cm(dep)}</b></span>${pbar(tot?dep/tot*100:0,'linear-gradient(90deg,#a78bfa,#f472b6)')}<small class="mut">Capital deployed vs available</small>`;
-  $('#h-spark').innerHTML=spark(g.series.map(x=>x.equity));
-  const exp=cf.days.reduce((a,d)=>a+d.events.filter(e=>e.type==='expected').length,0),active=s.loans_by_status.active+s.loans_by_status.overdue,collPct=(s.total_collected/((s.total_collected+s.total_outstanding)||1))*100;
-  $('#mini3').innerHTML=[
-   ['🌿','mint','Active loans',active,`${cm(s.total_outstanding)} outstanding`,`${ring(collPct,'#34d399')}<div><b>Collected vs expected</b><br>${cm(s.total_collected)} of ${cm(s.total_collected+s.total_outstanding)}<br><a href="#" onclick="view('loans');return false">See all loans →</a></div>`],
-   ['⏰','peach','Due soon',exp,`${cm(cf.totals.in_expected)} in 7 days`,`<div><b>Due today</b> ${cm(cf.due_today_total)}<br>${cf.days.slice(0,3).map(d=>`${fd(d.date)} · ${cm(d.in_expected)}`).join('<br>')||'Nothing due 🎉'}<br><a href="#" onclick="view('cash');return false">Open cash flow →</a></div>`],
-   ['🌷','rose','Overdue',s.overdue_count,`${cm(s.overdue_amount)} late`,`${ring(s.loan_count?s.overdue_count/s.loan_count*100:0,'#f472b6')}<div><b>Share of loans overdue</b><br>${s.overdue_count} of ${s.loan_count} loans<br><a href="#" onclick="document.querySelector('#f-od').open=true;document.querySelector('#f-od').scrollIntoView({behavior:'smooth'});return false">Show overdue list →</a></div>`]]
-   .map(([i,t,l,v,sub,more])=>`<details class="mini card ${t}"><summary><span class="ic ${t}">${i}</span><span class="ml">${l}</span><span class="mv num">${v}</span><span class="ms">${sub}</span></summary><div class="more">${more}</div></details>`).join('');
-  $('#odn').textContent=s.overdue_count}).catch(()=>{});
+ Promise.all([api('/growth?period=month'),api('/cashflow?range=next7'),api('/settings')]).then(([g,cf,st])=>{const c=g.current,cap=st.starting_capital||0;
+  $('#h-eq').textContent=cm(c.equity);const prof=c.equity-cap;
+  $('#a-ch').innerHTML=`<span class="chg ${prof>=0?'up':'dn'}">${prof>=0?'▲':'▼'} ${cm(Math.abs(prof))} · ${cap?(prof/cap*100).toFixed(1).replace('.',','):'—'}%</span> <span class="mut">vs starting capital</span>`;
+  $('#a-meta').innerHTML=[['Account size',cm(cap)],['Currency',CUR],['Updated',fd(new Date().toISOString().slice(0,10))]].map(([k,v])=>`<div><span>${k}</span><b class="num">${v}</b></div>`).join('');
+  $('#h-sub').innerHTML=[['💵','Cash available',cm(c.cash_on_hand)],['🌱','Out on loan',cm(c.on_loan)],['🍯','Profit (interest)',cm(c.cumulative_profit)],['🧾','Write-offs',cm(c.write_offs)]].map(([i,k,v])=>`<div class="as"><span class="asi">${i}</span><span class="ask">${k}</span><b class="num">${v}</b></div>`).join('');
+  const colR=s.total_collected/((s.total_collected+s.total_outstanding)||1),dep=c.on_loan/((c.on_loan+Math.max(0,c.cash_on_hand))||1),odR=s.overdue_amount/(s.total_outstanding||1),pt=cap?c.cumulative_profit/(cap*.1):0;
+  const O=[['Profit target','Interest earned vs target (10% of capital)',pt,1,'gt',`${cm(c.cumulative_profit)} / ${cm(cap*.1)}`],['Collection target','Collected vs everything due, goal 80%',colR,.8,'gt'],['Capital deployed','Out on loan vs total, limit 90%',dep,.9,'lt'],['Overdue limit','Overdue vs outstanding, limit 15%',odR,.15,'lt']];
+  $('#objs').innerHTML=O.map(([n,d,v,t,m,txt])=>{const ok=m==='gt'?v>=t:v<=t,w=m==='gt'?Math.min(1,v/t):Math.min(1,v/(t||1));return `<div class="orow"><div class="ot"><b>${n}</b><span class="badge ${ok?(m==='gt'?'pass':'ok'):(m==='gt'?'prog':'warn')}">${ok?(m==='gt'?'✓ Passed':'✓ Within limit'):(m==='gt'?'In progress':'⚠︎ Over limit')}</span></div>
+   <div class="od2"><span>${d}</span><b class="num">${txt||(v*100).toFixed(1).replace('.',',')+'%'}</b></div><div class="pbar"><i style="width:${(w*100).toFixed(1)}%;background:${m==='gt'?'linear-gradient(90deg,#a7f3d0,#f3d98b)':ok?'linear-gradient(90deg,#c4b5fd,#f9a8d4)':'linear-gradient(90deg,#fed7aa,#fda4af)'}"></i></div></div>`}).join('');
+  const exp=cf.days.reduce((a,d)=>a+d.events.filter(e=>e.type==='expected').length,0);window._dueSoon=[exp,cf.totals.in_expected,c.interest_earned];
+  $('#kx-extra')&&($('#kx-extra').innerHTML='');
+  document.querySelectorAll('#kpis .kpi.xtra').forEach(e=>e.remove());
+  $('#kpis').insertAdjacentHTML('beforeend',[['⏰','Due in 7 days',cm(cf.totals.in_expected),exp+' installments'],['🍯','Interest this month',cm(c.interest_earned),money(c.interest_earned)]].map(([i,l,v,x])=>`<div class="card kpi xtra"><div class="l"><span class="ki">${i}</span>${l}</div><div class="v num">${v}</div><div class="kx">${x}</div></div>`).join(''));
+  $('#odn').textContent=s.overdue_count;$('#a-status').textContent=s.overdue_count?'● Active · watch overdue':'● Active';$('#a-status').className='badge '+(s.overdue_count?'watch':'live');
+  eqChart('month')}).catch(()=>{});
  const k=[['Total lent',s.total_lent],['Total collected',s.total_collected],['Outstanding',s.total_outstanding],['Expected interest',s.expected_interest],['Overdue loans',s.overdue_count,1,1],['Overdue amount',s.overdue_amount,1],['Borrowers',s.borrower_count,0,1],['Loans',s.loan_count,0,1]];
- $('#kpis').innerHTML=k.map(([l,v,bad,cnt])=>`<div class="card kpi ${bad&&v?'bad':''}" title="${cnt?v:money(v)}"><div class="l">${l}</div><div class="v num">${cnt?v:cm(v)}</div><div class="kx">${cnt?'':money(v)}</div></div>`).join('');
+ const KI={'Total lent':'💸','Total collected':'🌸','Outstanding':'🌱','Expected interest':'✨','Overdue loans':'🌷','Overdue amount':'⚠︎','Borrowers':'🫧','Loans':'📄'};
+ $('#kpis').innerHTML=k.map(([l,v,bad,cnt])=>`<div class="card kpi ${bad&&v?'bad':''}" title="${cnt?v:money(v)}"><div class="l"><span class="ki">${KI[l]||''}</span>${l}</div><div class="v num">${cnt?v:cm(v)}</div><div class="kx">${cnt?'':money(v)}</div></div>`).join('');
  const t=s.monthly_trends;charts.c1?.destroy();charts.c1=new Chart($('#c1'),{type:'bar',data:{labels:t.map(x=>fd(x.month)),datasets:[{label:'Disbursed',data:t.map(x=>x.disbursed),backgroundColor:C.violet},{label:'Collected',data:t.map(x=>x.collected),backgroundColor:C.green}]},options:{responsive:true,animation:false,plugins:{tooltip:{callbacks:{title:i=>'Month '+i[0].label,label:c=>`${c.dataset.label}: ${money(c.parsed.y)}`}}},scales:{x:{title:{display:true,text:'Month (MM/YYYY)'}},y:{title:{display:true,text:CUR},ticks:{callback:v=>money(v)}}}}});
  const b=s.loans_by_status;charts.c2?.destroy();charts.c2=new Chart($('#c2'),{type:'doughnut',data:{labels:Object.keys(b),datasets:[{data:Object.values(b),backgroundColor:[C.blue,C.green,C.coral,C.grey]}]},options:{animation:false}});
  $('#t-od').innerHTML=loanRows(await api('/loans?status=overdue'))}
