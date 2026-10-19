@@ -283,22 +283,7 @@ dialog::backdrop{background:rgba(255,248,239,.7)!important}.g label,.calc label,
 .sm2 button{min-height:36px!important;font-size:14px!important}
 @media (max-width:700px){.mini3{grid-template-columns:1fr;gap:10px}.hv{font-size:36px}.mini summary{padding:14px}.mv{font-size:24px}}
 .kpi .v{overflow-wrap:anywhere}@media (max-width:700px){.kpi .v{font-size:20px!important}}
-#v-home{padding-top:6px}.welcome{position:relative;overflow:hidden;padding:26px 6px 22px}.wblob{position:absolute;right:-10px;top:-6px;width:300px;height:120px;opacity:.95;pointer-events:none}
-.wi{position:relative}.wh{font-family:Nunito,ui-rounded,system-ui,sans-serif;font-weight:900;font-size:30px;color:#3b1f47;letter-spacing:-.01em}.wd{font-size:14px;font-weight:600;color:#6d3fb0;margin-top:2px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:8px 0 22px}
-.tile{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ic tl" "ic tv" "ic ts";column-gap:12px;align-items:center;text-align:left;font:inherit;color:#3b1f47;padding:18px!important;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.tile:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(180,140,120,.16)!important}.tile:active{transform:scale(.97)}
-.tile .ic{grid-area:ic}.tl{grid-area:tl;font-size:13px;font-weight:600;color:#6e5578}.tv{grid-area:tv;font-size:26px;line-height:1.15;color:#3b1f47}.tv.late{color:#a3324e}.ts{grid-area:ts;font-size:12.5px;color:#6e5578}
-.ic.lav{background:#f3e8ff}.ic.gold{background:#fef3c7}.ic.pink{background:#fce7f3}.ic.blue{background:#e0f2fe}
-.wlinks{display:flex;flex-wrap:wrap;gap:10px}
-@media (max-width:700px){.tiles{grid-template-columns:1fr 1fr;gap:10px}.tile{grid-template-columns:1fr;grid-template-areas:"ic" "tl" "tv" "ts";row-gap:4px;padding:14px!important}.tv{font-size:22px}.wh{font-size:26px}.wblob{width:220px;opacity:.8}.wlinks .b{flex:1 1 100%}}
-.tile.vis{display:flex;flex-direction:column;align-items:stretch;gap:10px}.tile.vis .tl{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#3b1f47}
-.ic.sm3{width:36px;height:36px;border-radius:12px;font-size:18px;background:#f3e8ff;display:inline-grid;place-items:center}
-.tvis{display:block;min-height:70px}.hbars{width:100%;height:70px;display:block}.pbar.big{height:16px;margin-top:26px}
-.tile.wide{grid-column:1/-1}.dots{display:flex;flex-wrap:wrap;gap:7px}.dots i,.lg i{width:16px;height:16px;border-radius:50%;display:inline-block}
-.lg{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}.lg i{width:10px;height:10px;margin-right:-6px}
-i.ac{background:#c4b5fd}i.ds{background:#fed7aa}i.od{background:#fb9fb1;box-shadow:0 0 0 2px #ffe4e8}i.pd{background:#a7f3d0}i.df{background:#d6cfe0}
-@media (max-width:700px){.tile.vis{grid-column:1/-1}}
+#v-home{min-height:calc(100vh - 180px);min-height:calc(100dvh - 180px);display:flex;align-items:center;justify-content:center}.hello{text-align:center;padding:40px 20px;max-width:520px}.hello-h{font-family:Nunito,ui-rounded,system-ui,sans-serif;font-weight:800;font-size:34px;line-height:1.2;color:#2b2233;letter-spacing:-.01em;margin:0}.hello-d{font-size:14px;color:#7a7180;margin-top:10px}.hello-go{margin-top:30px;min-height:52px;padding:14px 34px!important;font-size:17px!important;font-weight:700;border-radius:14px!important}#v-home .hello-go{background:#2b2233!important;color:#fff!important;border:1px solid #2b2233!important;box-shadow:none!important}#v-home .hello-go:active{transform:scale(.98)}@media (max-width:700px){.hello-h{font-size:28px}.hello-go{width:100%}}
 /* ===== Prop-firm account look ===== */
 body{font-family:Inter,system-ui,-apple-system,sans-serif}
 header{background:rgba(255,255,255,.78)!important;box-shadow:0 1px 0 #efe4d6,0 8px 24px rgba(120,90,140,.06)!important}
@@ -327,8 +312,6 @@ nav button{border-radius:10px!important;font-weight:600;font-size:14px!important
 .kpis.stat{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px}
 .kpis.stat .kpi{padding:12px 14px!important}.kpis.stat .kpi::before{display:none}.ki{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:#f3e8ff;margin-right:7px;font-size:13px;vertical-align:middle;text-transform:none}
 .kpis.stat .kpi .l{display:flex;align-items:center;text-transform:none;letter-spacing:0;font-size:12.5px}.kpis.stat .kpi .v{font-size:21px!important}
-.welcome{padding:22px 4px 18px}.wst{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tile.vis .tl{flex-wrap:wrap}
 @media (max-width:800px){.pgrid{grid-template-columns:1fr}.acct-main{grid-template-columns:1fr}.acct-eq{font-size:38px}}
 @media (max-width:700px){.kpis.stat{grid-template-columns:1fr 1fr}.kpis.stat .kpi .v{font-size:19px!important}.acct-meta{gap:14px}}
 #t-loans td:last-child,#t-loans th:last-child,#t-borrowers td:last-child,#t-borrowers th:last-child,#t-repayments td:last-child,#t-repayments th:last-child,#t-od td:last-child,#t-od th:last-child{position:sticky;right:0;z-index:1;background:#fffdf8!important;box-shadow:-6px 0 8px -6px rgba(59,31,71,.18)}
@@ -345,11 +328,7 @@ nav button{border-radius:10px!important;font-weight:600;font-size:14px!important
 <nav><button data-v="home" class="on">🏠 Home</button><button data-v="dash">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button><button data-v="cash">📅 Cash flow</button><button data-v="calc">🧮 Calculator</button><button data-v="growth">📈 Growth</button><button data-v="leaders">🏆 Leaderboard</button></nav>
 <select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
-<section id="v-home"><div class="welcome"><svg class="wblob" viewBox="0 0 300 120" aria-hidden="true"><path d="M220 -10c50 5 90 40 75 80s-70 50-110 30-45-60-20-90 30-22 55-20z" fill="#f3e8ff"/><path d="M20 100c10-30 60-40 85-20s15 50-15 55-80-10-70-35z" fill="#dcfce7"/><circle cx="160" cy="25" r="10" fill="#fde68a"/><circle cx="185" cy="95" r="6" fill="#fbcfe8"/></svg>
- <div class="wi"><div class="acct-k">Lending account · Hood Capital</div><div class="wh">Welcome back ✨</div><div class="wd" id="w-date"></div><p class="mut" style="margin:6px 0 0">Here's how Hood Capital is doing today.</p><div class="wst" id="w-st"></div></div></div>
- <div class="tiles" id="tiles"></div>
- <div class="wlinks"><button class="b" onclick="view('dash')">📊 Open full dashboard</button><button class="b" onclick="view('cash')">📅 Cash flow</button><button class="b" onclick="view('calc')">🧮 Calculator</button></div>
-</section>
+<section id="v-home"><div class="hello"><h1 class="hello-h">Hello, Mr. Hood — welcome.</h1><div class="hello-d" id="w-date"></div><button class="b p hello-go" onclick="view('dash')">Enter dashboard</button></div></section>
 <section id="v-dash" class="hide">
  <div class="acct card glass">
   <div class="acct-top"><div><div class="acct-k">Lending account</div><div class="acct-n">Hood Capital <span class="badge live" id="a-status">● Active</span></div></div><div class="acct-meta" id="a-meta"></div></div>
@@ -481,25 +460,7 @@ const spark=vals=>{if(!vals.length)return '';const P=['#c4b5fd','#f9a8d4','#a7f3
 const ring=(pct,col)=>{pct=Math.max(0,Math.min(100,pct||0));const c=2*Math.PI*20;return `<svg class="ring" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#f1e8dc" stroke-width="6"/><circle cx="24" cy="24" r="20" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(c*pct/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 24 24)"/><text x="24" y="28" text-anchor="middle">${Math.round(pct)}%</text></svg>`};
 const pbar=(pct,col)=>`<div class="pbar"><i style="width:${Math.max(0,Math.min(100,pct||0))}%;background:${col}"></i></div>`;
 document.addEventListener('click',e=>{const b=e.target.closest('#dseg button');if(!b)return;document.querySelectorAll('#dseg button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.dch').forEach(x=>x.classList.toggle('hide',x.dataset.c!==b.dataset.c));charts[b.dataset.c]?.resize()});
-async function loadHome(){const d=new Date();$('#w-date').textContent=d.toLocaleDateString('en-GB',{weekday:'long'})+' · '+d.toLocaleDateString('en-GB',{month:'long'});
- const [s,g,gw,cf,loans]=await Promise.all([api('/summary'),api('/growth?period=month'),api('/growth?period=week'),api('/cashflow?range=next7'),api('/loans')]);const c=g.current;
- const P=['#c4b5fd','#f9a8d4','#a7f3d0','#fed7aa','#e9d5ff','#bae6fd','#f3d98b'];
- const bars=(vals)=>{const v=vals.map(x=>Math.max(0,x)),mx=Math.max(...v)||1,w=240,hh=70,bw=w/v.length;return `<svg class="hbars" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true">${v.map((x,i)=>{const bh=Math.max(4,x/mx*(hh-6));return `<rect x="${(i*bw+bw*.14).toFixed(1)}" y="${(hh-bh).toFixed(1)}" width="${(bw*.72).toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(6,bw*.3).toFixed(1)}" fill="${P[i%P.length]}"/>`}).join('')}</svg>`};
- const prog=(f,col)=>`<div class="pbar big"><i style="width:${(Math.max(0,Math.min(1,f||0))*100).toFixed(1)}%;background:${col}"></i></div>`;
- const soon=new Set(cf.days.flatMap(x=>x.events.filter(e=>e.type==='expected').map(e=>e.loan_id)));
- const cls=l=>l.effective_status==='overdue'?'od':l.effective_status==='paid'?'pd':l.effective_status==='defaulted'?'df':soon.has(l.id)?'ds':'ac';
- const dots=loans.length?`<div class="dots">${loans.map(l=>`<i class="${cls(l)}"></i>`).join('')}</div>`:'<div class="mut">No loans yet — your first one will appear here 🌱</div>';
- const avail=Math.max(0,c.cash_on_hand),dep=c.on_loan,coll=s.total_collected/((s.total_collected+s.total_outstanding)||1);
- const T=[
-  ['growth','💜','Growing over time',bars(g.series.map(x=>x.equity)),'Equity, month by month'],
-  ['growth','🍯','Interest coming in',bars(gw.series.map(x=>x.interest_earned)),'Week by week'],
-  ['loans','🌸','Collected so far',prog(coll,'linear-gradient(90deg,#a7f3d0,#f3d98b)'),'Collected vs still expected'],
-  ['growth','🌿','Money at work',prog(dep/((avail+dep)||1),'linear-gradient(90deg,#c4b5fd,#f9a8d4)'),'Out on loan vs cash available'],
-  ['cash','🫧','Every loan at a glance',dots,'<span class="lg"><i class="ac"></i>active <i class="ds"></i>due soon <i class="od"></i>overdue <i class="pd"></i>paid <i class="df"></i>defaulted</span>']];
- const eqs=g.series.map(x=>x.equity),up=eqs.length>1&&eqs[eqs.length-1]>=eqs[0],ints=gw.series.map(x=>x.interest_earned),intUp=ints.slice(-4).reduce((a,b)=>a+b,0)>0;
- const CH=[up?['pass','Trending up']:['prog','Building'],intUp?['pass','Flowing']:['prog','Quiet'],coll>=.8?['pass','On track']:['prog','In progress'],dep/((avail+dep)||1)<=.9?['ok','Healthy']:['warn','Fully deployed'],s.overdue_count?['warn','Needs attention']:['pass','All clear']];
- $('#w-st').innerHTML=`<span class="badge ${s.overdue_count?'watch':'live'}">● ${s.overdue_count?'Active · watch overdue':'Active'}</span><span class="badge ok">${up?'Growing':'Steady'}</span>`;
- $('#tiles').innerHTML=T.map(([go,i,l,vis,sub],k)=>`<button class="tile card glass vis ${k===4?'wide':''}" onclick="view('${go}')"><span class="tl"><span class="ic sm3">${i}</span>${l}<span class="badge ${CH[k][0]}" style="margin-left:auto">${CH[k][1]}</span></span><span class="tvis">${vis}</span><span class="ts">${sub}</span></button>`).join('')}
+async function loadHome(){$('#w-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
 async function eqChart(per){document.querySelectorAll('#eqseg button').forEach(b=>b.classList.toggle('on',b.dataset.p===per));const g=await api('/growth?period='+per),s=g.series;
  const P=['#b9a3f5','#e88ac0','#6fd6ae','#f6b98a','#d4bff7','#8ccbf0','#e8c872'];charts.ceq?.destroy();
  charts.ceq=new Chart($('#ceq'),{type:'bar',data:{labels:s.map(x=>per==='week'?fd(x.period):fd(x.period.slice(0,7))),datasets:[{label:'Equity',data:s.map(x=>x.equity),backgroundColor:s.map((x,i)=>P[i%P.length])}]},
