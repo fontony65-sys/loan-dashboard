@@ -331,12 +331,17 @@ nav button{border-radius:10px!important;font-weight:600;font-size:14px!important
 .tile.vis .tl{flex-wrap:wrap}
 @media (max-width:800px){.pgrid{grid-template-columns:1fr}.acct-main{grid-template-columns:1fr}.acct-eq{font-size:38px}}
 @media (max-width:700px){.kpis.stat{grid-template-columns:1fr 1fr}.kpis.stat .kpi .v{font-size:19px!important}.acct-meta{gap:14px}}
+#t-loans td:last-child,#t-loans th:last-child,#t-borrowers td:last-child,#t-borrowers th:last-child,#t-repayments td:last-child,#t-repayments th:last-child,#t-od td:last-child,#t-od th:last-child{position:sticky;right:0;z-index:1;background:#fffdf8!important;box-shadow:-6px 0 8px -6px rgba(59,31,71,.18)}
+#t-loans th:last-child,#t-borrowers th:last-child,#t-repayments th:last-child,#t-od th:last-child{z-index:3;background:#f7f0fd!important}
+#t-loans td:last-child,#t-borrowers td:last-child,#t-repayments td:last-child,#t-od td:last-child{white-space:nowrap}
+.b.d.dz{background:#ffe4e8!important;color:#a3324e!important;border-color:#fda4af!important;font-weight:700}
+@media(max-width:700px){#t-loans td:last-child .b.sm,#t-borrowers td:last-child .b.sm,#t-repayments td:last-child .b.sm,#t-od td:last-child .b.sm{min-height:36px;padding:6px 10px}}
 </style></head><body>
 <div id="login" class="card hide"><h2><span class="logo">H</span>Hood Capital</h2><p class="mut">Loan Dashboard · admin sign in</p>
 <form id="lf"><input name="username" placeholder="Username" value="admin" required><input name="password" type="password" placeholder="Password" required>
 <div class="err" id="lerr"></div><button class="b p" style="width:100%">Sign in</button></form></div>
 <div id="app" class="hide">
-<header><h1><span class="logo">H</span><span class="brand">Hood Capital<small>Loan Dashboard</small></span> <span class="tag">EXAMPLE DATA</span></h1>
+<header><h1><span class="logo">H</span><span class="brand">Hood Capital<small>Loan Dashboard</small></span></h1>
 <nav><button data-v="home" class="on">🏠 Home</button><button data-v="dash">Dashboard</button><button data-v="loans">Loans</button><button data-v="borrowers">Borrowers</button><button data-v="repayments">Repayments</button><button data-v="cash">📅 Cash flow</button><button data-v="calc">🧮 Calculator</button><button data-v="growth">📈 Growth</button><button data-v="leaders">🏆 Leaderboard</button></nav>
 <select id="cur" title="Currency"></select><span class="exp"><a class="b sm p" id="export" href="/api/export.xlsx" download>⬇ Export</a><details id="expm"><summary class="b sm" aria-label="More export options">CSV ▾</summary><div class="menu"><a href="/api/export/borrowers.csv" download>Borrowers CSV</a><a href="/api/export/loans.csv" download>Loans CSV</a><a href="/api/export/repayments.csv" download>Repayments CSV</a></div></details></span><button class="b sm" id="logout">Log out</button></header>
 <main>
@@ -530,7 +535,8 @@ async function loadBorrowers(){const r=await api('/borrowers?q='+encodeURICompon
 async function loadRepayments(){const p=new URLSearchParams({q:$('#rq').value,method:$('#rm').value,from:$('#rf').value,to:$('#rt').value});const r=await api('/repayments?'+p);
  $('#t-repayments').innerHTML=`<tr><th>#</th><th>Payment date</th><th>Loan</th><th>Borrower</th><th>Amount</th><th>Method</th><th>Reference</th><th></th></tr>`+r.map(x=>`<tr><td>${x.id}</td><td>${fd(x.date)}</td><td>#${x.loan_id}</td><td>${esc(x.borrower_name)}</td><td class="n">${money(x.amount)}</td><td>${x.method}</td><td>${esc(x.reference)}</td>
  <td><button class="b sm" onclick="payForm(null,${x.id})">Edit</button> <button class="b sm d" onclick="del('repayments',${x.id})">Delete</button></td></tr>`).join('')||'<tr><td class="mut">No repayments</td></tr>'}
-async function del(t,id){if(!confirm(`Delete ${t.slice(0,-1)} #${id}?`))return;try{await api(`/${t}/${id}`,{method:'DELETE'});toast('Deleted');refresh(cur())}catch(e){alert(e.message.includes('FOREIGN')?'Cannot delete: borrower still has loans.':e.message)}}
+async function del(t,id){const n=t.slice(0,-1),f=$('#df');f.innerHTML=`<h3>Delete ${n} #${id}?</h3><p class="mut">This cannot be undone.${t==='loans'?' Any repayments on this loan are removed too.':''}</p><div class="err" id="derr"></div><div class="acts"><button class="b" value="cancel" formnovalidate>Cancel</button><button class="b d dz" id="dok" type="button">Delete</button></div>`;
+ $('#dok').onclick=async()=>{const b=$('#dok');b.disabled=true;b.textContent='Deleting…';try{await api(`/${t}/${id}`,{method:'DELETE'});$('#dlg').close();toast(`Deleted ${n} #${id}`);refresh(cur())}catch(e){b.disabled=false;b.textContent='Delete';const m=e.message||'';$('#derr').textContent=/FOREIGN|has loans/i.test(m)?(t==='borrowers'?'Cannot delete: this borrower still has loans. Delete their loans first.':'Cannot delete: other records still reference this '+n+'.'):/not found/i.test(m)?'Already deleted — refresh the page.':'Delete failed: '+m}};$('#dlg').showModal()}
 function dialog(title,fields,data,onSave){const f=$('#df');f.innerHTML=`<h3>${title}</h3><div class="g">${fields.map(([n,l,type='text',o])=>`<label class="${type==='textarea'||o?.full?'f':''}">${l}${
  type==='select'?`<select name="${n}">${o.opts.map(([v,t])=>`<option value="${esc(v)}" ${String(data[n]??o.def??'')===String(v)?'selected':''}>${esc(t)}</option>`).join('')}</select>`:type==='textarea'?`<textarea name="${n}">${esc(data[n])}</textarea>`:`<input name="${n}" type="${type}" ${type==='number'?'step="any"':''} value="${esc(data[n]??o?.def??'')}" ${o?.req?'required':''}>`}</label>`).join('')}</div><div class="err" id="derr"></div>
  <div class="acts"><button class="b" value="cancel" formnovalidate>Cancel</button><button class="b p" id="save">Save</button></div>`;
